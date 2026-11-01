@@ -32,164 +32,40 @@ const KANBAN_STAGES = [
 
 const DEFAULT_APPLICATIONS = [
   {
-    ID: "APP-001", Country: "Germany", City: "Berlin", Company: "Zalando",
-    Role: "Senior Backend Engineer (Java 21 / Kafka)", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "EU Blue Card",
-    Salary_Range: "€85,000 - €98,000", Applied_Date: "2026-10-28", Follow_Up_Date: "2026-11-05",
-    Job_URL: "https://jobs.zalando.com", Contact_Recruiter: "Talent Acquisition - Order Platform",
-    Notes: "Highlighted Airtel Order Management System & Java 21 Virtual Threads 40% runtime boost. Anabin H+ attached."
+    ID: "APP-019",
+    Country: "Netherlands",
+    City: "test",
+    Company: "test",
+    Role: "test",
+    Resume_Track: "Java / Spring Boot Backend",
+    Status: "Wishlist",
+    Priority: "High",
+    Visa_Sponsorship: "Verified Sponsor",
+    Visa_Type: "test",
+    Salary_Range: "test",
+    Applied_Date: "2026-10-31",
+    Follow_Up_Date: "2026-11-07",
+    Job_URL: "https://test.com",
+    Contact_Recruiter: "test",
+    Notes: "test",
   },
   {
-    ID: "APP-002", Country: "Germany", City: "Berlin", Company: "Delivery Hero",
-    Role: "Senior Platform Engineer - Logistics", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Recruiter Screen", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "EU Blue Card",
-    Salary_Range: "€82,000 - €95,000", Applied_Date: "2026-10-24", Follow_Up_Date: "2026-11-02",
-    Job_URL: "https://careers.deliveryhero.com", Contact_Recruiter: "Sarah M. (Tech Recruiter)",
-    Notes: "Recruiter screen scheduled. Emphasize RabbitMQ + Kafka event-driven architecture & Resilience4j."
-  },
-  {
-    ID: "APP-003", Country: "Germany", City: "Munich", Company: "Celonis",
-    Role: "Senior AI Agent Engineer", Resume_Track: "GenAI / Agentic AI",
-    Status: "Wishlist", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "EU Blue Card",
-    Salary_Range: "€90,000 - €110,000", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-07",
-    Job_URL: "https://www.celonis.com/careers", Contact_Recruiter: "Engineering Manager - Process AI",
-    Notes: "Strong match for CrewAI multi-agent architecture & RAG pipeline experience."
-  },
-  {
-    ID: "APP-004", Country: "Netherlands", City: "Amsterdam", Company: "Booking.com",
-    Role: "Senior Software Engineer - Core Backend", Resume_Track: "Java / Spring Boot Backend",
-    Status: "OA / Coding Test", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Kennismigrant (30% Ruling)",
-    Salary_Range: "€95,000 - €115,000", Applied_Date: "2026-10-22", Follow_Up_Date: "2026-11-01",
-    Job_URL: "https://careers.booking.com", Contact_Recruiter: "Booking Tech Recruiting",
-    Notes: "HackerRank system design + coding test received. Eligible for 30% tax ruling & full relocation package."
-  },
-  {
-    ID: "APP-005", Country: "Netherlands", City: "Amsterdam", Company: "Adyen",
-    Role: "Senior Java Engineer - High Throughput Payments", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Kennismigrant (30% Ruling)",
-    Salary_Range: "€92,000 - €112,000", Applied_Date: "2026-10-29", Follow_Up_Date: "2026-11-06",
-    Job_URL: "https://careers.adyen.com", Contact_Recruiter: "Fintech Platform Team",
-    Notes: "Emphasized 85% to 99% transactional consistency checks & low-latency Java concurrency."
-  },
-  {
-    ID: "APP-006", Country: "United Kingdom", City: "London", Company: "Revolut",
-    Role: "Senior Backend Engineer (Java / Spring Boot)", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Skilled Worker Visa",
-    Salary_Range: "£85,000 - £105,000", Applied_Date: "2026-10-27", Follow_Up_Date: "2026-11-04",
-    Job_URL: "https://www.revolut.com/careers", Contact_Recruiter: "Referral via NIT Alumni",
-    Notes: "Home Office licensed sponsor. Highlighted high-scale event processing & config-driven onboarding."
-  },
-  {
-    ID: "APP-007", Country: "United Kingdom", City: "London", Company: "Synthesia",
-    Role: "Senior AI Platform & Agent Engineer", Resume_Track: "GenAI / Agentic AI",
-    Status: "Wishlist", Priority: "Medium", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Skilled Worker Visa",
-    Salary_Range: "£90,000 - £115,000", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-08",
-    Job_URL: "https://www.synthesia.io/careers", Contact_Recruiter: "AI Platform Lead",
-    Notes: "Use Resume B (GenAI). Highlight GPT-4/Claude orchestration, FastAPI & production RAG."
-  },
-  {
-    ID: "APP-008", Country: "Ireland", City: "Dublin", Company: "Stripe",
-    Role: "Senior Software Engineer - Reliability & Backend", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Critical Skills Permit (CSEP)",
-    Salary_Range: "€92,000 - €115,000", Applied_Date: "2026-10-26", Follow_Up_Date: "2026-11-03",
-    Job_URL: "https://stripe.com/jobs", Contact_Recruiter: "Dublin Infrastructure Team",
-    Notes: "CSEP leads to Stamp 4 PR in 2 years. Highlighted Circuit Breaker (Resilience4j) & 90% RCA reduction."
-  },
-  {
-    ID: "APP-009", Country: "Ireland", City: "Dublin", Company: "Intercom",
-    Role: "Senior AI Engineer - Fin Agent Team", Resume_Track: "GenAI / Agentic AI",
-    Status: "Wishlist", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Critical Skills Permit (CSEP)",
-    Salary_Range: "€88,000 - €108,000", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-07",
-    Job_URL: "https://www.intercom.com/careers", Contact_Recruiter: "AI Engineering Recruiter",
-    Notes: "Direct match for Autonomous Agent reasoning chains, ReAct prompting, and tool integration."
-  },
-  {
-    ID: "APP-010", Country: "UAE", City: "Dubai", Company: "Careem",
-    Role: "Senior Platform Software Engineer (Java)", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Technical Interview", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "UAE Work Visa (0% Tax)",
-    Salary_Range: "AED 28,000 - 34,000 / mo", Applied_Date: "2026-10-18", Follow_Up_Date: "2026-11-01",
-    Job_URL: "https://www.careem.com/en-AE/careers/", Contact_Recruiter: "Omar K. (Talent Partner)",
-    Notes: "Round 1 cleared! System design round next week focusing on Kafka/MongoDB Change Streams."
-  },
-  {
-    ID: "APP-011", Country: "UAE", City: "Abu Dhabi", Company: "Core42 / G42",
-    Role: "Senior Applied GenAI & Agentic Systems Engineer", Resume_Track: "GenAI / Agentic AI",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "UAE Work Visa / Golden Visa",
-    Salary_Range: "AED 32,000 - 40,000 / mo", Applied_Date: "2026-10-29", Follow_Up_Date: "2026-11-05",
-    Job_URL: "https://core42.ai/careers", Contact_Recruiter: "Abu Dhabi AI Talent Team",
-    Notes: "Salary >30k AED qualifies for 10-year UAE Golden Visa. Sent GenAI resume highlighting CrewAI & FAISS."
-  },
-  {
-    ID: "APP-012", Country: "Singapore", City: "Singapore", Company: "Grab",
-    Role: "Senior Backend Engineer - Regional Platform", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Employment Pass (COMPASS)",
-    Salary_Range: "SGD 10,500 - 13,500 / mo", Applied_Date: "2026-10-25", Follow_Up_Date: "2026-11-03",
-    Job_URL: "https://grab.careers", Contact_Recruiter: "SG Regional Tech Recruiter",
-    Notes: "NIT Bhopal earns top COMPASS qualification points; Airtel super-app experience maps directly to Grab."
-  },
-  {
-    ID: "APP-013", Country: "Singapore", City: "Singapore", Company: "DBS Bank",
-    Role: "Senior GenAI & Backend Platform Engineer", Resume_Track: "GenAI / Agentic AI",
-    Status: "Wishlist", Priority: "Medium", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Employment Pass (COMPASS SOL)",
-    Salary_Range: "SGD 10,000 - 12,500 / mo", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-09",
-    Job_URL: "https://www.dbs.com/careers", Contact_Recruiter: "Tech & AI Division",
-    Notes: "AI Engineer is on Singapore Shortage Occupation List (+20 COMPASS bonus points)."
-  },
-  {
-    ID: "APP-014", Country: "Australia", City: "Sydney", Company: "Atlassian",
-    Role: "Senior Software Engineer (Java / Cloud Platform)", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Subclass 482 (Specialist Skills)",
-    Salary_Range: "AUD 155,000 - 180,000", Applied_Date: "2026-10-28", Follow_Up_Date: "2026-11-06",
-    Job_URL: "https://www.atlassian.com/company/careers", Contact_Recruiter: "Sydney Platform Recruiting",
-    Notes: "Specialist Skills stream (>AUD 135k) gets 7-day visa processing. Highlighted Jira API & SRE AI project."
-  },
-  {
-    ID: "APP-015", Country: "Australia", City: "Sydney", Company: "Canva",
-    Role: "Senior Backend / AI Infrastructure Engineer", Resume_Track: "GenAI / Agentic AI",
-    Status: "Wishlist", Priority: "Medium", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Subclass 482",
-    Salary_Range: "AUD 150,000 - 175,000", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-08",
-    Job_URL: "https://www.lifeatcanva.com", Contact_Recruiter: "Canva AI Platform",
-    Notes: "Combine Java 21 backend scale with LLM orchestration in cover note."
-  },
-  {
-    ID: "APP-016", Country: "Canada", City: "Toronto", Company: "Cohere",
-    Role: "Senior Software Engineer - Enterprise Agentic AI", Resume_Track: "GenAI / Agentic AI",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Global Talent Stream (LMIA Cat B)",
-    Salary_Range: "CAD 145,000 - 175,000", Applied_Date: "2026-10-29", Follow_Up_Date: "2026-11-06",
-    Job_URL: "https://cohere.com/careers", Contact_Recruiter: "Enterprise AI Team",
-    Notes: "2-week fast-track work permit under Global Talent Stream. Strong match for multi-agent RAG."
-  },
-  {
-    ID: "APP-017", Country: "Canada", City: "Vancouver", Company: "Amazon (AWS)",
-    Role: "Software Development Engineer II (Java / Distributed Systems)", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Wishlist", Priority: "Medium", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Global Talent Stream",
-    Salary_Range: "CAD 150,000 - 180,000", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-09",
-    Job_URL: "https://www.amazon.jobs", Contact_Recruiter: "AWS Vancouver Recruiting",
-    Notes: "Reach out to NIT Bhopal alumni in AWS Vancouver for referral ID before submitting."
-  },
-  {
-    ID: "APP-018", Country: "Switzerland", City: "Zurich", Company: "Google",
-    Role: "Senior Software Engineer - Cloud & AI Reliability", Resume_Track: "GenAI / Agentic AI",
-    Status: "Wishlist", Priority: "High", Visa_Sponsorship: "Verified Sponsor", Visa_Type: "Swiss B-Permit (Quota Sponsor)",
-    Salary_Range: "CHF 155,000 - 190,000", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-10",
-    Job_URL: "https://careers.google.com", Contact_Recruiter: "Zurich Site Reliability / AI",
-    Notes: "Big Tech Zurich can sponsor non-EU B-Permit quota. Emphasize SRE Agentic AI & Java 21 scale."
-  },
-  {
-    ID: "APP-019", Country: "USA", City: "San Francisco (Remote / O-1A)", Company: "YC AI Startup (WorkAtAStartup)",
-    Role: "Founding Senior Agentic AI Engineer", Resume_Track: "GenAI / Agentic AI",
-    Status: "Applied", Priority: "High", Visa_Sponsorship: "Remote USD", Visa_Type: "Remote USD -> O-1A Visa",
-    Salary_Range: "$110,000 - $145,000", Applied_Date: "2026-10-30", Follow_Up_Date: "2026-11-05",
-    Job_URL: "https://www.workatastartup.com", Contact_Recruiter: "Founder Direct Message",
-    Notes: "Applied via YC Work at a Startup. Remote USD initially with O-1A visa sponsorship pathway."
-  },
-  {
-    ID: "APP-020", Country: "USA", City: "Bengaluru -> Seattle (Transfer)", Company: "Uber / Stripe (L-1B Track)",
-    Role: "Senior Backend Engineer (L-1B Transfer Track)", Resume_Track: "Java / Spring Boot Backend",
-    Status: "Wishlist", Priority: "High", Visa_Sponsorship: "Internal Transfer / L-1", Visa_Type: "L-1B Intracompany Transfer",
-    Salary_Range: "$165,000 - $210,000 (Post-Transfer)", Applied_Date: "2026-10-31", Follow_Up_Date: "2026-11-12",
-    Job_URL: "https://www.uber.com/us/en/careers/", Contact_Recruiter: "India-to-US Mobility Track",
-    Notes: "Backup US strategy: Join US MNC in India and transfer to Seattle/SF after 12 months via L-1B."
+    ID: "APP-018",
+    Country: "Switzerland",
+    City: "Zurich",
+    Company: "Google",
+    Role: "Senior Software Engineer - Cloud & AI Reliability",
+    Resume_Track: "GenAI / Agentic AI",
+    Status: "Wishlist",
+    Priority: "High",
+    Visa_Sponsorship: "Verified Sponsor",
+    Visa_Type: "Swiss B-Permit (Quota Sponsor)",
+    Salary_Range: "CHF 155,000 - 190,000",
+    Applied_Date: "2026-10-31",
+    Follow_Up_Date: "2026-11-10",
+    Job_URL: "https://careers.google.com",
+    Contact_Recruiter: "Zurich Site Reliability / AI",
+    Notes: "Big Tech Zurich can sponsor non-EU B-Permit quota. Emphasize SRE Agentic AI & Java 21 scale.",
   },
 ];
 
@@ -825,49 +701,133 @@ function updateExcelBackendStatusUI() {
   }
 }
 
-async function loadInitialExcelBackend(forceRepoReload = false) {
-  if (!forceRepoReload) {
-    const cachedApps = localStorage.getItem(STORAGE_KEYS.APPS);
-    const cachedStrategies = localStorage.getItem(STORAGE_KEYS.STRATEGIES);
-    const cachedChecklist = localStorage.getItem(STORAGE_KEYS.CHECKLIST);
-    if (cachedApps) {
-      try {
-        state.applications = JSON.parse(cachedApps);
-        state.strategies = cachedStrategies ? JSON.parse(cachedStrategies) : [...DEFAULT_STRATEGIES];
-        state.checklist = cachedChecklist ? JSON.parse(cachedChecklist) : [...DEFAULT_CHECKLIST];
-        state.hasUnsavedChanges = localStorage.getItem(STORAGE_KEYS.DIRTY) === "true";
-        renderAll();
-        updateExcelBackendStatusUI();
-        return;
-      } catch (_) {
-        // Proceed to fetch from ./jobs_tracker.xlsx
+async function fetchLatestExcelBuffer() {
+  let ghCfg = {
+    owner: "ak2697291",
+    repo: "global-job-tracker",
+    branch: "main",
+    path: "jobs_tracker.xlsx",
+    token: "",
+  };
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.GH_CONFIG);
+    if (saved) {
+      const parsedCfg = JSON.parse(saved);
+      ghCfg = {
+        owner: parsedCfg.owner || ghCfg.owner,
+        repo: parsedCfg.repo || ghCfg.repo,
+        branch: parsedCfg.branch || ghCfg.branch,
+        path: parsedCfg.path || ghCfg.path,
+        token: parsedCfg.token || "",
+      };
+    }
+  } catch (_) {
+    // Use default repo config
+  }
+
+  // 1. Try GitHub Contents API first so reloads reflect newly pushed commits immediately
+  //    (bypasses GitHub Pages CDN caching delay and works even on file:// protocol)
+  if (ghCfg.owner && ghCfg.repo && ghCfg.path) {
+    try {
+      const encodedPath = ghCfg.path.split("/").map(encodeURIComponent).join("/");
+      const apiUrl = `https://api.github.com/repos/${encodeURIComponent(ghCfg.owner)}/${encodeURIComponent(ghCfg.repo)}/contents/${encodedPath}?ref=${encodeURIComponent(ghCfg.branch)}`;
+      const headers = {
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      };
+      if (ghCfg.token) {
+        headers.Authorization = `Bearer ${ghCfg.token}`;
       }
+      const apiResp = await fetch(apiUrl, { headers, cache: "no-store" });
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        if (data && typeof data.content === "string") {
+          const cleanBase64 = data.content.replace(/\s+/g, "");
+          const binaryStr = atob(cleanBase64);
+          const bytes = new Uint8Array(binaryStr.length);
+          for (let i = 0; i < binaryStr.length; i++) {
+            bytes[i] = binaryStr.charCodeAt(i);
+          }
+          return bytes.buffer;
+        }
+      }
+    } catch (_) {
+      // Fall back to relative ./jobs_tracker.xlsx fetch
+    }
+  }
+
+  // 2. Fallback to local/hosted ./jobs_tracker.xlsx with cache-busting query string
+  const response = await fetch(`./jobs_tracker.xlsx?t=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.arrayBuffer();
+}
+
+async function loadInitialExcelBackend(forceRepoReload = false) {
+  const isDirty = localStorage.getItem(STORAGE_KEYS.DIRTY) === "true";
+  const cachedApps = localStorage.getItem(STORAGE_KEYS.APPS);
+  const cachedStrategies = localStorage.getItem(STORAGE_KEYS.STRATEGIES);
+  const cachedChecklist = localStorage.getItem(STORAGE_KEYS.CHECKLIST);
+
+  // Only keep localStorage without fetching if the user has unsaved local edits
+  if (!forceRepoReload && isDirty && cachedApps) {
+    try {
+      state.applications = JSON.parse(cachedApps);
+      state.strategies = cachedStrategies ? JSON.parse(cachedStrategies) : [...DEFAULT_STRATEGIES];
+      state.checklist = cachedChecklist ? JSON.parse(cachedChecklist) : [...DEFAULT_CHECKLIST];
+      state.hasUnsavedChanges = true;
+      renderAll();
+      updateExcelBackendStatusUI();
+      return;
+    } catch (_) {
+      // Proceed to fetch from jobs_tracker.xlsx
     }
   }
 
   try {
-    const response = await fetch("./jobs_tracker.xlsx", { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const buffer = await response.arrayBuffer();
+    const buffer = await fetchLatestExcelBuffer();
     const parsed = await parseExcelArrayBuffer(buffer);
-    state.applications = parsed.applications.length ? parsed.applications : structuredClone(DEFAULT_APPLICATIONS);
-    state.strategies = parsed.strategies.length ? parsed.strategies : structuredClone(DEFAULT_STRATEGIES);
-    state.checklist = parsed.checklist.length ? parsed.checklist : structuredClone(DEFAULT_CHECKLIST);
+    state.applications = Array.isArray(parsed.applications)
+      ? parsed.applications
+      : structuredClone(DEFAULT_APPLICATIONS);
+    state.strategies =
+      Array.isArray(parsed.strategies) && parsed.strategies.length
+        ? parsed.strategies
+        : structuredClone(DEFAULT_STRATEGIES);
+    state.checklist =
+      Array.isArray(parsed.checklist) && parsed.checklist.length
+        ? parsed.checklist
+        : structuredClone(DEFAULT_CHECKLIST);
     state.hasUnsavedChanges = false;
     localStorage.setItem(STORAGE_KEYS.DIRTY, "false");
     saveToLocalCache(false);
     renderAll();
     if (forceRepoReload) {
-      showToast("Reloaded jobs_tracker.xlsx from repository!");
+      showToast(`Reloaded jobs_tracker.xlsx (${state.applications.length} entries)!`);
     }
   } catch (_) {
-    // Fallback when opened via file:// protocol
+    // Offline / file:// fallback: prefer cached localStorage if available, otherwise DEFAULT_APPLICATIONS
+    if (!forceRepoReload && cachedApps) {
+      try {
+        state.applications = JSON.parse(cachedApps);
+        state.strategies = cachedStrategies ? JSON.parse(cachedStrategies) : structuredClone(DEFAULT_STRATEGIES);
+        state.checklist = cachedChecklist ? JSON.parse(cachedChecklist) : structuredClone(DEFAULT_CHECKLIST);
+        state.hasUnsavedChanges = isDirty;
+        renderAll();
+        updateExcelBackendStatusUI();
+        return;
+      } catch (_err) {
+        // Ignore and use defaults
+      }
+    }
     state.applications = structuredClone(DEFAULT_APPLICATIONS);
     state.strategies = structuredClone(DEFAULT_STRATEGIES);
     state.checklist = structuredClone(DEFAULT_CHECKLIST);
     state.hasUnsavedChanges = false;
     saveToLocalCache(false);
     renderAll();
+    if (forceRepoReload) {
+      showToast(`Loaded jobs_tracker.xlsx (${state.applications.length} entries)!`);
+    }
   }
 }
 
@@ -1333,12 +1293,98 @@ async function exportOrSaveExcelWorkbook() {
   showToast("Downloaded updated jobs_tracker.xlsx!");
 }
 
-async function pushExcelToGitHubRepo() {
-  const owner = document.getElementById("gh-owner").value.trim();
-  const repo = document.getElementById("gh-repo").value.trim();
+function parseGitHubFormInputs() {
+  let owner = document.getElementById("gh-owner").value.trim();
+  let repo = document.getElementById("gh-repo").value.trim();
   const branch = document.getElementById("gh-branch").value.trim() || "main";
-  const path = document.getElementById("gh-path").value.trim() || "jobs_tracker.xlsx";
+  let path = document.getElementById("gh-path").value.trim() || "jobs_tracker.xlsx";
   const token = document.getElementById("gh-token").value.trim();
+
+  // Sanitize if the user pasted a full GitHub URL into repo or owner
+  const urlMatch = repo.match(/github\.com\/([^/]+)\/([^/.]+)(\.git)?/i);
+  if (urlMatch) {
+    owner = urlMatch[1];
+    repo = urlMatch[2];
+    document.getElementById("gh-owner").value = owner;
+    document.getElementById("gh-repo").value = repo;
+  } else if (repo.includes("/")) {
+    const parts = repo.split("/").filter(Boolean);
+    if (parts.length === 2) {
+      owner = parts[0];
+      repo = parts[1].replace(/\.git$/i, "");
+      document.getElementById("gh-owner").value = owner;
+      document.getElementById("gh-repo").value = repo;
+    }
+  }
+  path = path.replace(/^\/+/, "");
+  document.getElementById("gh-path").value = path;
+
+  return { owner, repo, branch, path, token };
+}
+
+function showGitHubDiagnostic(htmlMsg, isError = true) {
+  const box = document.getElementById("gh-sync-diagnostic");
+  if (!box) return;
+  box.hidden = false;
+  box.className = `gh-diagnostic ${isError ? "is-error" : "is-success"}`;
+  box.innerHTML = htmlMsg;
+}
+
+async function verifyGitHubTokenPermissions() {
+  const { owner, repo, branch, path, token } = parseGitHubFormInputs();
+  if (!owner || !repo || !token) {
+    showGitHubDiagnostic(
+      "⚠️ Please fill in <strong>GitHub Username</strong>, <strong>Repository Name</strong>, and <strong>Personal Access Token</strong> first.",
+      true
+    );
+    return;
+  }
+
+  const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token}`,
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+
+  try {
+    const repoResp = await fetch(
+      `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
+      { headers }
+    );
+    if (!repoResp.ok) {
+      const err = await repoResp.json().catch(() => ({}));
+      showGitHubDiagnostic(
+        `❌ <strong>Cannot access ${escapeXml(owner)}/${escapeXml(repo)} (HTTP ${repoResp.status}):</strong> ${escapeXml(err.message || "Check username, repo name, and token.")}`,
+        true
+      );
+      return;
+    }
+    const repoData = await repoResp.json();
+    const canPush = repoData.permissions && repoData.permissions.push === true;
+    const oauthScopes = repoResp.headers.get("x-oauth-scopes") || "(Fine-grained token)";
+
+    if (!canPush) {
+      showGitHubDiagnostic(
+        `❌ <strong>Read-Only Token Detected (Write Permission Missing):</strong> Your token can read <code>${escapeXml(owner)}/${escapeXml(repo)}</code>, but <code>permissions.push</code> is <code>false</code> (Scopes: <code>${escapeXml(oauthScopes)}</code>).<br>
+        <strong>How to fix HTTP 403:</strong>
+        <br>1. Easiest: <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Global+Job+Tracker+Excel+Sync" target="_blank" rel="noopener noreferrer">Click here to generate a Classic Token with <code>repo</code> scope pre-checked ↗</a>.
+        <br>2. Or for a Fine-Grained Token (<code>github_pat_...</code>): Edit the token on GitHub &rarr; set <strong>Repository access</strong> to include <code>${escapeXml(repo)}</code> &rarr; set <strong>Repository permissions &rarr; Contents</strong> to <strong>Read and write</strong>.`,
+        true
+      );
+      return;
+    }
+
+    showGitHubDiagnostic(
+      `✅ <strong>Token Verified!</strong> Write access confirmed for <code>${escapeXml(owner)}/${escapeXml(repo)}</code> (branch: <code>${escapeXml(branch)}</code>, file: <code>${escapeXml(path)}</code>). You can now click <strong>Push jobs_tracker.xlsx to GitHub Now</strong>.`,
+      false
+    );
+  } catch (err) {
+    showGitHubDiagnostic(`❌ <strong>Network Error:</strong> ${escapeXml(err.message)}`, true);
+  }
+}
+
+async function pushExcelToGitHubRepo() {
+  const { owner, repo, branch, path, token } = parseGitHubFormInputs();
 
   if (!owner || !repo || !token) {
     showToast("Please provide GitHub Username, Repo, and Personal Access Token.");
@@ -1354,10 +1400,12 @@ async function pushExcelToGitHubRepo() {
   if (pushBtn) pushBtn.disabled = true;
 
   try {
-    const apiBase = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path}`;
+    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+    const apiBase = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodedPath}`;
     const headers = {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28",
     };
 
     // 1. Check current file SHA if it already exists in repo
@@ -1393,13 +1441,32 @@ async function pushExcelToGitHubRepo() {
 
     if (!putResp.ok) {
       const errJson = await putResp.json().catch(() => ({}));
+      if (putResp.status === 403 && String(errJson.message).includes("Resource not accessible by personal access token")) {
+        const detailsEl = document.querySelector(".gh-troubleshoot-box");
+        if (detailsEl) detailsEl.open = true;
+        showGitHubDiagnostic(
+          `❌ <strong>HTTP 403 — Resource not accessible by personal access token:</strong><br>
+          Your token is currently <strong>Read-Only</strong> for <code>${escapeXml(owner)}/${escapeXml(repo)}</code>.<br>
+          • <strong>Quick Fix (Classic Token):</strong> <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Global+Job+Tracker+Excel+Sync" target="_blank" rel="noopener noreferrer">Click here to create a token with <code>repo</code> write permission pre-checked ↗</a>.<br>
+          • <strong>Quick Fix (Fine-Grained Token):</strong> Open your token in <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener noreferrer">GitHub Settings ↗</a> &rarr; select <strong>Only select repositories (${escapeXml(repo)})</strong> &rarr; set <strong>Repository permissions &rarr; Contents</strong> to <strong>Read and write</strong>.`,
+          true
+        );
+      } else {
+        showGitHubDiagnostic(
+          `❌ <strong>GitHub API Error (HTTP ${putResp.status}):</strong> ${escapeXml(errJson.message || "Failed to push file.")}`,
+          true
+        );
+      }
       throw new Error(errJson.message || `GitHub API HTTP ${putResp.status}`);
     }
 
     state.hasUnsavedChanges = false;
     localStorage.setItem(STORAGE_KEYS.DIRTY, "false");
     updateExcelBackendStatusUI();
-    document.getElementById("github-sync-dialog").close();
+    showGitHubDiagnostic(
+      `✅ <strong>Committed <code>${escapeXml(path)}</code> to <code>${escapeXml(owner)}/${escapeXml(repo)}</code> (${escapeXml(branch)})!</strong>`,
+      false
+    );
     showToast(`Committed ${path} to ${owner}/${repo} (${branch})!`);
   } catch (err) {
     showToast(`GitHub Sync Error: ${err.message}`);
@@ -1663,13 +1730,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = await handle.getFile();
         const buf = await file.arrayBuffer();
         const parsed = await parseExcelArrayBuffer(buf);
-        if (parsed.applications.length) state.applications = parsed.applications;
+        if (Array.isArray(parsed.applications)) state.applications = parsed.applications;
         if (parsed.strategies.length) state.strategies = parsed.strategies;
         if (parsed.checklist.length) state.checklist = parsed.checklist;
         state.hasUnsavedChanges = false;
+        localStorage.setItem(STORAGE_KEYS.DIRTY, "false");
         saveToLocalCache(false);
         renderAll();
-        showToast(`Linked local Excel backend: ${file.name}`);
+        showToast(`Linked local Excel backend: ${file.name} (${state.applications.length} entries)`);
         return;
       } catch (err) {
         if (err.name === "AbortError") return;
@@ -1683,10 +1751,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!file) return;
     const buf = await file.arrayBuffer();
     const parsed = await parseExcelArrayBuffer(buf);
-    if (parsed.applications.length) state.applications = parsed.applications;
+    if (Array.isArray(parsed.applications)) state.applications = parsed.applications;
     if (parsed.strategies.length) state.strategies = parsed.strategies;
     if (parsed.checklist.length) state.checklist = parsed.checklist;
     state.hasUnsavedChanges = false;
+    localStorage.setItem(STORAGE_KEYS.DIRTY, "false");
     saveToLocalCache(false);
     renderAll();
     showToast(`Imported ${state.applications.length} rows from ${file.name}!`);
@@ -1711,14 +1780,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (saved) {
       try {
         const cfg = JSON.parse(saved);
-        document.getElementById("gh-owner").value = cfg.owner || "";
-        document.getElementById("gh-repo").value = cfg.repo || "";
+        document.getElementById("gh-owner").value = cfg.owner || "ak2697291";
+        document.getElementById("gh-repo").value = cfg.repo || "global-job-tracker";
         document.getElementById("gh-branch").value = cfg.branch || "main";
         document.getElementById("gh-path").value = cfg.path || "jobs_tracker.xlsx";
         document.getElementById("gh-token").value = cfg.token || "";
       } catch (_) {
         // ignore
       }
+    } else {
+      document.getElementById("gh-owner").value = "ak2697291";
+      document.getElementById("gh-repo").value = "global-job-tracker";
+      document.getElementById("gh-branch").value = "main";
+      document.getElementById("gh-path").value = "jobs_tracker.xlsx";
     }
     document.getElementById("github-sync-dialog")?.showModal();
   });
@@ -1729,14 +1803,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btn-cancel-gh-dialog")?.addEventListener("click", () => {
     document.getElementById("github-sync-dialog")?.close();
   });
+  document.getElementById("btn-test-gh-token")?.addEventListener("click", verifyGitHubTokenPermissions);
   document.getElementById("btn-save-gh-config")?.addEventListener("click", () => {
-    const cfg = {
-      owner: document.getElementById("gh-owner").value.trim(),
-      repo: document.getElementById("gh-repo").value.trim(),
-      branch: document.getElementById("gh-branch").value.trim() || "main",
-      path: document.getElementById("gh-path").value.trim() || "jobs_tracker.xlsx",
-      token: document.getElementById("gh-token").value.trim(),
-    };
+    const cfg = parseGitHubFormInputs();
     localStorage.setItem(STORAGE_KEYS.GH_CONFIG, JSON.stringify(cfg));
     showToast("Saved GitHub repository settings locally!");
   });

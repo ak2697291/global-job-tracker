@@ -562,15 +562,37 @@
 
           <div class="field field-span-2">
             <label for="gh-token">GitHub Personal Access Token (Stored only in your browser)</label>
-            <span id="hint-gh-token" class="hint">Fine-grained PAT with Contents Read/Write on this repository</span>
-            <input type="password" id="gh-token" placeholder="github_pat_..." autocomplete="off" aria-describedby="hint-gh-token">
+            <span id="hint-gh-token" class="hint">
+              Need a token with write access?
+              <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Global+Job+Tracker+Excel+Sync" target="_blank" rel="noopener noreferrer">
+                Generate 1-Click Classic Token (<code>repo</code> scope pre-selected) ↗
+              </a>
+            </span>
+            <input type="password" id="gh-token" placeholder="ghp_... or github_pat_..." aria-describedby="hint-gh-token">
           </div>
         </div>
+
+        <details class="gh-troubleshoot-box">
+          <summary>⚠️ Fixing HTTP 403: &ldquo;Resource not accessible by personal access token&rdquo;</summary>
+          <ol class="sync-modes-list">
+            <li class="pretty-text">
+              <strong>If using a Fine-Grained Token (<code>github_pat_...</code>):</strong> Go to <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener noreferrer">GitHub Fine-Grained Tokens ↗</a>, open your token, and:
+              <br>• Change <strong>Repository access</strong> from <em>&ldquo;Public Repositories (read-only)&rdquo;</em> to <strong>&ldquo;Only select repositories&rdquo;</strong> (select your repo) or <strong>&ldquo;All repositories&rdquo;</strong>.
+              <br>• Under <strong>Permissions &rarr; Repository permissions &rarr; Contents</strong>, change access from <em>Read-only</em> to <strong>Read and write</strong>.
+            </li>
+            <li class="pretty-text">
+              <strong>If using a Classic Token (<code>ghp_...</code> — Easiest):</strong> Click <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Global+Job+Tracker+Excel+Sync" target="_blank" rel="noopener noreferrer">Generate Classic Token with <code>repo</code> scope ↗</a>, scroll down, click <strong>Generate token</strong>, and paste it above.
+            </li>
+          </ol>
+        </details>
+
+        <div id="gh-sync-diagnostic" class="gh-diagnostic" hidden role="alert"></div>
       </div>
 
       <footer class="dialog-footer">
         <button type="button" class="btn btn-ghost" id="btn-cancel-gh-dialog">Close</button>
-        <button type="button" class="btn btn-secondary" id="btn-save-gh-config">Save Config Locally</button>
+        <button type="button" class="btn btn-secondary" id="btn-test-gh-token">🔍 Verify Token Permissions</button>
+        <button type="button" class="btn btn-secondary" id="btn-save-gh-config">Save Config</button>
         <button type="submit" class="btn btn-primary" id="btn-push-gh-now">
           🚀 Push <code>jobs_tracker.xlsx</code> to GitHub Now
         </button>

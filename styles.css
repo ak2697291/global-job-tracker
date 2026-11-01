@@ -886,6 +886,42 @@
     font-size: 0.85rem;
   }
 
+  .gh-troubleshoot-box {
+    margin-block-start: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
+    font-size: 0.82rem;
+  }
+
+  .gh-troubleshoot-box summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--accent-warning);
+  }
+
+  .gh-diagnostic {
+    margin-block-start: 0.85rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    font-size: 0.83rem;
+    line-height: 1.45;
+  }
+
+  .gh-diagnostic.is-error {
+    border-color: var(--accent-danger);
+    background-color: rgba(220, 38, 38, 0.08);
+    color: var(--text-primary);
+  }
+
+  .gh-diagnostic.is-success {
+    border-color: var(--accent-success);
+    background-color: rgba(22, 163, 74, 0.1);
+    color: var(--text-primary);
+  }
+
   /* Forms & Validation After Interaction (:user-invalid) */
   .form-grid {
     display: grid;
