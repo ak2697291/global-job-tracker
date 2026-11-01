@@ -1,609 +1,1179 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- MANDATORY: Declare support for both light and dark themes to avoid FOUC -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <script>
-    {
-      const savedScheme = localStorage.getItem("color-scheme");
-      if (savedScheme === "light" || savedScheme === "dark") {
-        document.querySelector('meta[name="color-scheme"]').content = savedScheme;
-        document.documentElement.dataset.theme = savedScheme;
-      }
-    }
-  </script>
-  <title>Anil Kumar | Global Job Tracker &amp; Visa Strategy Hub (Excel Backend)</title>
+  <title>Anil Kumar — Global Job Relocation &amp; AI Resume Tailor Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <!-- SheetJS for full Excel (.xlsx) read/write in the browser (with built-in native OpenXML fallback in app.js) -->
+  <!-- Prevent theme flash before paint -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("ak_global_theme_v3");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+          var m = document.querySelector('meta[name="color-scheme"]');
+          if (m) m.content = saved;
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Supabase JS v2 SDK & SheetJS for .xlsx backup export/import -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
+  <!-- Popover Toast Notification -->
+  <div id="toast-popover" popover="manual" class="toast-notification" role="status" aria-live="polite">
+    <span id="toast-message">Synced with Supabase PostgreSQL</span>
+    <button type="button" id="btn-close-toast" class="toast-close" aria-label="Close notification">&times;</button>
+  </div>
+
+  <!-- Clean, Uncluttered Top Header -->
   <header class="app-header">
-    <div class="header-brand">
-      <div class="brand-badge" aria-hidden="true">🌍</div>
-      <div>
-        <h1>Global Job Application &amp; Visa Tracker</h1>
-        <p class="subtitle">
-          <strong>Anil Kumar</strong> · NIT Bhopal CSE · 4+ YoE Senior SWE @ Airtel ·
-          <span class="pill-inline">Resume A: Java 21 / Spring Boot</span>
-          <span class="pill-inline">Resume B: GenAI / Agentic AI</span>
-        </p>
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-badge" aria-hidden="true">🌍</div>
+        <div class="brand-text">
+          <div class="brand-title-row">
+            <h1>Anil Kumar — Global Relocation &amp; AI Career Hub</h1>
+            <button type="button" id="supabase-backend-status" class="backend-pill connected" title="Configure Supabase PostgreSQL Connection">
+              <span class="pulse-dot"></span>
+              <span id="backend-status-text">Supabase Live</span>
+            </button>
+          </div>
+          <p class="brand-subtitle">
+            Senior SWE @ Airtel (4+ YoE · 350M+ Users) · B.Tech CSE NIT Bhopal ·
+            <span id="header-track-chips" class="header-track-chips">
+              <span class="track-chip java-chip">Java 21 / Spring Boot 3</span>
+              <span class="track-chip genai-chip">GenAI / Agentic AI</span>
+              <span class="track-chip">Distributed Systems / SRE</span>
+              <span class="track-chip">Full-Stack / Custom Tracks</span>
+            </span>
+          </p>
+        </div>
       </div>
-    </div>
 
-    <div class="header-actions" role="toolbar" aria-label="Excel Backend and Dashboard Controls">
-      <div class="excel-status-pill" id="excel-backend-status" aria-live="polite">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span id="excel-status-text">Backend: <code>jobs_tracker.xlsx</code></span>
+      <div class="header-actions">
+        <button type="button" id="btn-add-job" class="btn btn-primary">
+          <span>➕ Add Application</span>
+        </button>
+        <button type="button" id="btn-open-ai-tailor" class="btn btn-accent">
+          <span>🤖 AI Resume Tailor</span>
+        </button>
+        <button type="button" id="btn-add-country-modal" class="btn btn-secondary" title="Add or Edit Country Visa Playbook">
+          <span>🗺️ Country Playbook</span>
+        </button>
+        <button type="button" id="btn-export-excel" class="btn btn-secondary" title="Export Backup to Excel (.xlsx)">
+          <span>📥 Export .xlsx</span>
+        </button>
+        <label for="excel-file-input" id="btn-import-excel-label" class="btn btn-secondary" title="Import .xlsx into Supabase">
+          <span>📤 Import</span>
+        </label>
+        <input type="file" id="excel-file-input" accept=".xlsx,.xls" hidden>
+        <button type="button" id="btn-supabase-settings" class="btn btn-secondary btn-icon" title="Supabase Database Settings" aria-label="Database Settings">
+          <span>🗄️</span>
+        </button>
+        <button type="button" id="btn-refresh-supabase" class="btn btn-secondary btn-icon" title="Sync from Supabase" aria-label="Refresh from Supabase">
+          <span>🔄</span>
+        </button>
+        <button type="button" id="btn-theme-toggle" class="btn btn-secondary" title="Cycle Theme: Auto / Dark / Light">
+          <span id="theme-toggle-label">🌓 Auto</span>
+        </button>
       </div>
-
-      <button type="button" class="btn btn-secondary" id="btn-import-excel">
-        <span aria-hidden="true">📂</span> Import / Link <code>.xlsx</code>
-      </button>
-      <input type="file" id="excel-file-input" accept=".xlsx,.xls,.csv" hidden>
-
-      <button type="button" class="btn btn-secondary" id="btn-export-excel">
-        <span aria-hidden="true">📥</span> Save <code>jobs_tracker.xlsx</code>
-      </button>
-
-      <button type="button" class="btn btn-secondary" id="btn-github-sync">
-        <span aria-hidden="true">🐙</span> GitHub Excel Sync
-      </button>
-
-      <button type="button" class="btn btn-primary" id="btn-add-job">
-        <span aria-hidden="true">➕</span> Add Application
-      </button>
-
-      <button type="button" class="btn btn-icon" id="btn-theme-toggle" aria-label="Toggle color theme">
-        <span id="theme-toggle-label">Theme: Auto</span>
-      </button>
     </div>
   </header>
 
-  <main class="dashboard-main">
-    <!-- Country Filter Bar (10 Target Countries) -->
-    <nav class="country-nav" aria-label="Filter applications by country">
-      <div class="country-pills" id="country-pills-container">
-        <!-- Populated dynamically with All + 10 Countries and live counts -->
-      </div>
-    </nav>
-
-    <!-- Active Country Strategy Banner (Shown when a specific country is selected) -->
-    <section id="active-country-banner" class="country-strategy-banner" hidden aria-live="polite">
-      <!-- Dynamically populated from Country_Strategy sheet in jobs_tracker.xlsx -->
-    </section>
-
-    <!-- KPI Summary Cards -->
-    <section class="kpi-grid" aria-label="Application pipeline metrics">
-      <article class="kpi-card">
-        <span class="kpi-label">Total Target / Applied</span>
-        <strong class="kpi-value" id="kpi-total">0</strong>
-        <span class="kpi-meta" id="kpi-countries-covered">Across 10 target countries</span>
-      </article>
-      <article class="kpi-card">
-        <span class="kpi-label">Submitted &amp; Active</span>
-        <strong class="kpi-value kpi-accent" id="kpi-applied">0</strong>
-        <span class="kpi-meta" id="kpi-wishlist-count">0 in wishlist queue</span>
-      </article>
-      <article class="kpi-card">
-        <span class="kpi-label">Interview Pipeline</span>
-        <strong class="kpi-value kpi-success" id="kpi-interviewing">0</strong>
-        <span class="kpi-meta" id="kpi-conversion-rate">0% interview conversion</span>
-      </article>
-      <article class="kpi-card">
-        <span class="kpi-label">Resume Track Split</span>
-        <strong class="kpi-value" id="kpi-resume-split">0 / 0</strong>
-        <span class="kpi-meta">Java Backend vs. GenAI Track</span>
-      </article>
-      <article class="kpi-card">
-        <span class="kpi-label">Follow-Ups Due</span>
-        <strong class="kpi-value kpi-warning" id="kpi-followups">0</strong>
-        <span class="kpi-meta" id="kpi-followup-hint">Action needed within 3 days</span>
-      </article>
-    </section>
-
-    <!-- Main View Switcher & Search/Filter Toolbar -->
-    <section class="controls-bar" aria-label="View mode and search filters">
-      <div class="view-tabs" role="tablist" aria-label="Dashboard views">
-        <button type="button" role="tab" aria-selected="true" class="view-tab active" data-view="table">
-          📋 Applications Table
+  <!-- Primary Navigation Bar (Directly under Header for Clear Visual Hierarchy) -->
+  <div class="workspace-tabs-bar">
+    <div class="workspace-tabs-inner">
+      <nav class="view-tabs" role="tablist" aria-label="Primary Workspace Views">
+        <button type="button" class="view-tab active" data-view="table" role="tab" aria-selected="true">
+          📋 Applications <span id="tab-count-apps" class="tab-badge">0</span>
         </button>
-        <button type="button" role="tab" aria-selected="false" class="view-tab" data-view="kanban">
-          🗂️ Kanban Pipeline
+        <button type="button" class="view-tab" data-view="tailor" role="tab" aria-selected="false">
+          🤖 AI Resume Tailor &amp; ATS <span class="tab-badge tab-badge-ai">GPT-5 + LaTeX PDF</span>
         </button>
-        <button type="button" role="tab" aria-selected="false" class="view-tab" data-view="strategy">
-          🧭 10-Country Visa &amp; Portal Matrix
+        <button type="button" class="view-tab" data-view="kanban" role="tab" aria-selected="false">
+          🗂️ Kanban Board
         </button>
-        <button type="button" role="tab" aria-selected="false" class="view-tab" data-view="resumes">
-          📄 Dual-Resume Optimizer &amp; ATS Checklist
+        <button type="button" class="view-tab" data-view="strategy" role="tab" aria-selected="false">
+          🌍 World Visa Hub Explorer <span id="tab-count-hubs" class="tab-badge">24</span>
         </button>
-      </div>
+        <button type="button" class="view-tab" data-view="analytics" role="tab" aria-selected="false">
+          📊 Analytics &amp; Follow-Ups
+        </button>
+        <button type="button" class="view-tab" data-view="resumes" role="tab" aria-selected="false">
+          ⚡ Outreach &amp; Checklist
+        </button>
+      </nav>
+    </div>
+  </div>
 
-      <search class="filter-controls" id="table-filter-controls">
-        <div class="search-input-wrap">
-          <label for="search-query" class="visually-hidden">Search company, role, city, or notes</label>
-          <input
-            type="search"
-            id="search-query"
-            placeholder="Search company, role, city, visa, or tech stack..."
-          >
+  <main class="main-container">
+    <!-- Pipeline Overview & Unified Filter Bar (Auto-shown on Applications, Kanban & Analytics views) -->
+    <div id="pipeline-overview-chrome" class="pipeline-chrome">
+      <!-- Sleek 6-Card KPI Strip -->
+      <section class="kpi-grid" aria-label="Pipeline Key Performance Indicators">
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Filtered Roles</span>
+            <span class="kpi-icon" aria-hidden="true">🎯</span>
+          </div>
+          <div class="kpi-value" id="kpi-total">0</div>
+          <div class="kpi-foot" id="kpi-total-sub">Across 0 countries</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Active / Applied</span>
+            <span class="kpi-icon" aria-hidden="true">🚀</span>
+          </div>
+          <div class="kpi-value" id="kpi-applied">0</div>
+          <div class="kpi-foot" id="kpi-applied-sub">Submitted &amp; in pipeline</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Interviews &amp; OAs</span>
+            <span class="kpi-icon" aria-hidden="true">💬</span>
+          </div>
+          <div class="kpi-value" id="kpi-interviews">0</div>
+          <div class="kpi-foot" id="kpi-interviews-sub">0% conversion</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Verified Visa Sponsors</span>
+            <span class="kpi-icon" aria-hidden="true">🛂</span>
+          </div>
+          <div class="kpi-value" id="kpi-sponsors">0</div>
+          <div class="kpi-foot" id="kpi-sponsors-sub">100% sponsor coverage</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Resume Tracks</span>
+            <span class="kpi-icon" aria-hidden="true">⚡</span>
+          </div>
+          <div class="kpi-value" id="kpi-split">0</div>
+          <div class="kpi-foot" id="kpi-split-sub">Multi-track distribution</div>
+        </article>
+
+        <article class="kpi-card kpi-card-alert">
+          <div class="kpi-top">
+            <span class="kpi-label">Follow-Ups Due</span>
+            <span class="kpi-icon" aria-hidden="true">⏰</span>
+          </div>
+          <div class="kpi-value" id="kpi-followups">0</div>
+          <div class="kpi-foot" id="kpi-followups-sub">Action required within 3d</div>
+        </article>
+      </section>
+
+      <!-- Unified Filter & Country Command Card -->
+      <section class="filter-command-card" aria-label="Search, Region and Country Filters">
+        <!-- Row 1: Search + Dropdown Filters + Country Quick Jump -->
+        <div class="filter-controls-row">
+          <div class="search-box">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input type="search" id="search-query" placeholder="Search company, role, city, country, visa, tech stack..." aria-label="Search applications">
+          </div>
+
+          <div class="filter-selects">
+            <select id="filter-resume" aria-label="Filter by Resume Track">
+              <option value="ALL">All Resume Tracks</option>
+              <option value="Java / Spring Boot Backend">☕ Java / Spring Boot Backend</option>
+              <option value="GenAI / Agentic AI Engineer">🤖 GenAI / Agentic AI Engineer</option>
+              <option value="Distributed Systems / Cloud SRE">☁️ Distributed Systems / Cloud SRE</option>
+              <option value="Full-Stack (React + Java/Python)">🌐 Full-Stack (React + Java/Python)</option>
+            </select>
+
+            <select id="filter-status" aria-label="Filter by Application Stage">
+              <option value="ALL">All Stages</option>
+              <option value="Wishlist">Wishlist</option>
+              <option value="Applied">Applied</option>
+              <option value="OA / Coding Test">OA / Coding Test</option>
+              <option value="Recruiter Screen">Recruiter Screen</option>
+              <option value="Technical Interview">Technical Interview</option>
+              <option value="Final Round">Final Round</option>
+              <option value="Offer">Offer</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+
+            <select id="filter-priority" aria-label="Filter by Priority">
+              <option value="ALL">All Priorities</option>
+              <option value="High">🔥 High Priority</option>
+              <option value="Medium">⚡ Medium Priority</option>
+              <option value="Low">🌱 Low Priority</option>
+            </select>
+
+            <div class="country-quick-jump">
+              <input
+                type="search"
+                id="global-country-jump"
+                list="world-countries-datalist"
+                placeholder="🔎 Jump to any country..."
+                aria-label="Jump to any country worldwide"
+              >
+              <datalist id="world-countries-datalist"></datalist>
+            </div>
+
+            <button type="button" id="btn-reset-filters" class="btn btn-secondary btn-sm">
+              Reset Filters
+            </button>
+          </div>
         </div>
 
-        <div class="select-wrap">
-          <label for="filter-resume" class="visually-hidden">Filter by Resume Track</label>
-          <select id="filter-resume">
-            <option value="ALL">All Resume Tracks</option>
-            <option value="Java / Spring Boot Backend">☕ Resume A: Java / Spring Boot</option>
-            <option value="GenAI / Agentic AI">🤖 Resume B: GenAI / Agentic AI</option>
-          </select>
+        <!-- Row 2: Region Chips + Smart Country Pills -->
+        <div class="geo-filter-row">
+          <div class="region-chips" id="region-pills-container" role="group" aria-label="Filter by World Region">
+            <button type="button" class="region-chip active" data-region="ALL">🌐 All Regions</button>
+            <button type="button" class="region-chip" data-region="Europe">🇪🇺 Europe</button>
+            <button type="button" class="region-chip" data-region="Middle East">🇦🇪 Middle East</button>
+            <button type="button" class="region-chip" data-region="Asia-Pacific">🌏 APAC</button>
+            <button type="button" class="region-chip" data-region="Americas">🌎 Americas</button>
+            <button type="button" class="region-chip" data-region="Remote / Global">💻 Remote</button>
+          </div>
+
+          <div class="country-pills-bar" id="country-pills-container" role="group" aria-label="Filter by Country">
+            <!-- Populated dynamically by app.js (shows active countries + toggle for 0-count hubs) -->
+          </div>
         </div>
+      </section>
 
-        <div class="select-wrap">
-          <label for="filter-status" class="visually-hidden">Filter by Status</label>
-          <select id="filter-status">
-            <option value="ALL">All Stages</option>
-            <option value="Wishlist">Wishlist</option>
-            <option value="Applied">Applied</option>
-            <option value="OA / Coding Test">OA / Coding Test</option>
-            <option value="Recruiter Screen">Recruiter Screen</option>
-            <option value="Technical Interview">Technical Interview</option>
-            <option value="Final Round">Final Round</option>
-            <option value="Offer">Offer</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-        </div>
+      <!-- Active Country Visa & Relocation Intelligence Banner (Visible when a specific country is selected) -->
+      <section id="active-country-banner" class="country-strategy-banner" hidden aria-live="polite"></section>
+    </div>
 
-        <div class="select-wrap">
-          <label for="filter-priority" class="visually-hidden">Filter by Priority</label>
-          <select id="filter-priority">
-            <option value="ALL">All Priorities</option>
-            <option value="High">🔥 High Priority</option>
-            <option value="Medium">⚡ Medium Priority</option>
-            <option value="Low">🌱 Low Priority</option>
-          </select>
-        </div>
-
-        <button type="button" class="btn btn-ghost" id="btn-reset-filters">Reset</button>
-      </search>
-    </section>
-
-    <!-- VIEW 1: Applications Table -->
+    <!-- ======================================================================
+         VIEW 1: APPLICATIONS TABLE
+         ====================================================================== -->
     <section id="view-table" class="view-panel">
-      <div class="table-container" tabindex="0" role="region" aria-label="Job applications table">
-        <table class="jobs-table">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Country &amp; City</th>
-              <th scope="col">Company &amp; Role</th>
-              <th scope="col">Resume Sent</th>
-              <th scope="col">Stage / Status</th>
-              <th scope="col">Visa &amp; Sponsorship</th>
-              <th scope="col">Comp Range</th>
-              <th scope="col">Dates &amp; Follow-Up</th>
-              <th scope="col">Notes &amp; Recruiter</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="jobs-table-body">
-            <!-- Populated from jobs_tracker.xlsx -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- VIEW 2: Kanban Pipeline -->
-    <section id="view-kanban" class="view-panel" hidden>
-      <div class="kanban-board" id="kanban-board-container">
-        <!-- Populated dynamically by stage -->
-      </div>
-    </section>
-
-    <!-- VIEW 3: 10-Country Strategy Matrix (Sheet 2 of jobs_tracker.xlsx) -->
-    <section id="view-strategy" class="view-panel" hidden>
-      <div class="section-intro">
-        <div>
-          <h2>10-Country Visa Sponsorship, Salary &amp; Portal Strategy</h2>
-          <p class="pretty-text">
-            Synchronized directly from the <code>Country_Strategy</code> worksheet in <code>jobs_tracker.xlsx</code>.
-            Click any country card to filter your applications or copy outreach templates.
-          </p>
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="jobs-table" id="applications-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Country &amp; City</th>
+                <th>Company &amp; Role</th>
+                <th>Resume Track</th>
+                <th>Stage</th>
+                <th>Priority</th>
+                <th>Visa &amp; Compensation</th>
+                <th>Applied / Follow-Up</th>
+                <th>Key Notes &amp; Strategy</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-table-body"></tbody>
+          </table>
+        </div>
+        <div id="table-empty-state" class="empty-state" hidden>
+          <div class="empty-icon">🌍</div>
+          <h3>No applications match your current filters</h3>
+          <p>Reset your filters or add a new international role for any country worldwide.</p>
+          <div class="empty-actions">
+            <button type="button" class="btn btn-primary" id="btn-empty-add-job">➕ Add Application</button>
+            <button type="button" class="btn btn-secondary" id="btn-empty-add-playbook">🗺️ Customize Country Playbook</button>
+          </div>
         </div>
       </div>
-      <div class="strategy-cards-grid" id="strategy-cards-container">
-        <!-- Populated from Country_Strategy sheet -->
+    </section>
+
+    <!-- ======================================================================
+         VIEW 2: AI RESUME TAILOR, JOB LINK SCRAPER, ATS GATE & PDF STUDIO
+         ====================================================================== -->
+    <section id="view-tailor" class="view-panel" hidden="until-found">
+      <div class="tailor-studio-shell">
+        <!-- Studio Top Banner -->
+        <div class="tailor-hero-bar">
+          <div class="tailor-hero-left">
+            <div class="tailor-hero-badges">
+              <span class="badge badge-java">🤖 Azure OpenAI (gpt-5-chat-himanshuL)</span>
+              <span class="badge badge-genai">📄 1-Page LaTeX → PDF Compiler</span>
+              <span class="badge badge-sponsor">🎯 Multi-Resume ATS &amp; Relatability Gate</span>
+            </div>
+            <h2>AI Job Link Scraper, ATS Relatability Gate &amp; LaTeX Resume Tailor</h2>
+            <p>
+              Paste any job URL (or pick a tracked role). The AI scrapes the posting, evaluates ATS keyword &amp; domain relatability across your saved LaTeX resumes (<strong id="tailor-resumes-count">2</strong> tracks), runs a Generator ↔ Supervisor refinement loop, and compiles a 1-page PDF ready to download and apply.
+            </p>
+          </div>
+          <div class="tailor-hero-actions">
+            <button type="button" id="btn-manage-latex-resumes" class="btn btn-secondary">
+              <span>📚 Base LaTeX Resumes &amp; AI Settings</span>
+            </button>
+            <button type="button" id="btn-tailor-reset" class="btn btn-secondary btn-sm">
+              <span>🔄 Reset Studio</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main 2-Column Studio Grid: Left = Pipeline & Workbench, Right = AI Companion Chat -->
+        <div class="tailor-studio-grid">
+          <!-- Left Column: Job Input, Progress, Extracted Intel, Gate Comparison & LaTeX/PDF Workbench -->
+          <div class="tailor-main-column">
+            <!-- Step 1 Card: Job Link & JD Input -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <div>
+                  <span class="step-kicker">STEP 1 · TARGET JOB INPUT</span>
+                  <h3>Job Posting URL or Tracked Application</h3>
+                </div>
+                <span id="tailor-status-badge" class="badge badge-sponsor">Ready</span>
+              </div>
+
+              <div class="tailor-input-grid">
+                <div class="field field-span-2">
+                  <label for="tailor-job-url">Job Posting URL (Auto-Scrapes via Jina Reader &amp; HTML/JSON-LD Proxy)</label>
+                  <input
+                    type="url"
+                    id="tailor-job-url"
+                    placeholder="https://careers.booking.com/... or https://www.adyen.com/careers/..."
+                  >
+                </div>
+
+                <div class="field">
+                  <label for="tailor-load-tracked-job">Or Load from Your Tracked Pipeline</label>
+                  <select id="tailor-load-tracked-job">
+                    <option value="">— Pick a Tracked Job from Pipeline —</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="tailor-max-rounds">Generator ↔ Supervisor Audit Rounds</label>
+                  <select id="tailor-max-rounds">
+                    <option value="1">1 Round (Fast ~20s)</option>
+                    <option value="2" selected>2 Rounds (Recommended High ATS Fit)</option>
+                    <option value="3">3 Rounds (Maximum Polish)</option>
+                  </select>
+                </div>
+              </div>
+
+              <details id="tailor-raw-jd-details" class="tailor-jd-details">
+                <summary>📝 Paste / Override Raw Job Description Text (Use if job board requires login)</summary>
+                <div class="field" style="margin-top: 0.75rem;">
+                  <textarea
+                    id="tailor-raw-jd"
+                    rows="5"
+                    placeholder="Paste the full job description, requirements, or tech stack here. If provided alongside a URL, both are combined for maximum accuracy..."
+                  ></textarea>
+                </div>
+              </details>
+
+              <div class="tailor-cta-row">
+                <button type="button" id="btn-run-ai-tailor" class="btn btn-primary btn-lg">
+                  ⚡ Scrape, Check ATS &amp; Tailor PDF
+                </button>
+                <button type="button" id="btn-tailor-scrape-only" class="btn btn-secondary">
+                  🔍 Scrape &amp; Check ATS Gate Only
+                </button>
+              </div>
+            </div>
+
+            <!-- Pipeline 5-Step Progress & Live Telemetry Log -->
+            <div id="tailor-progress-card" class="studio-card" hidden>
+              <div class="tailor-steps-track">
+                <div id="tailor-step-1" class="tailor-step-item">
+                  <span class="step-num">1</span>
+                  <span>Scrape URL / JD</span>
+                </div>
+                <div id="tailor-step-2" class="tailor-step-item">
+                  <span class="step-num">2</span>
+                  <span>Extract ATS Intel</span>
+                </div>
+                <div id="tailor-step-3" class="tailor-step-item">
+                  <span class="step-num">3</span>
+                  <span>Relatability Gate</span>
+                </div>
+                <div id="tailor-step-4" class="tailor-step-item">
+                  <span class="step-num">4</span>
+                  <span>Gen ↔ Sup LaTeX</span>
+                </div>
+                <div id="tailor-step-5" class="tailor-step-item">
+                  <span class="step-num">5</span>
+                  <span>Compile 1-Page PDF</span>
+                </div>
+              </div>
+              <pre id="tailor-log-box" class="tailor-log-box" aria-live="polite">[AI Tailor Studio] Ready.</pre>
+            </div>
+
+            <!-- Step 2 Output: Extracted Job Intelligence Card -->
+            <div id="tailor-job-intel-card" class="studio-card" hidden>
+              <div class="studio-card-header">
+                <div>
+                  <span class="step-kicker">STEP 2 · EXTRACTED JOB INTELLIGENCE</span>
+                  <h3 id="tailor-intel-title">Extracted Role</h3>
+                </div>
+                <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                  <span id="tailor-intel-seniority" class="badge badge-java">Senior</span>
+                  <button type="button" id="btn-tailor-save-job" class="btn btn-secondary btn-sm">
+                    ➕ Save Job to Tracker
+                  </button>
+                </div>
+              </div>
+              <p id="tailor-intel-summary" class="intel-summary-text"></p>
+              <div class="intel-skills-grid">
+                <div class="intel-skill-box">
+                  <h4>🎯 Must-Have Skills</h4>
+                  <div id="tailor-intel-must" class="tailor-skill-pills"></div>
+                </div>
+                <div class="intel-skill-box">
+                  <h4>✨ Nice-to-Have Skills</h4>
+                  <div id="tailor-intel-nice" class="tailor-skill-pills"></div>
+                </div>
+                <div class="intel-skill-box">
+                  <h4>🔑 Implied &amp; ATS Keywords</h4>
+                  <div id="tailor-intel-implied" class="tailor-skill-pills"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 Output: Multi-Resume ATS & Experience Relatability Gate -->
+            <div id="tailor-gate-card" class="studio-card" hidden>
+              <div class="studio-card-header">
+                <div>
+                  <span class="step-kicker">STEP 3 · MULTI-RESUME ATS &amp; EXPERIENCE RELATABILITY GATE</span>
+                  <h3>Parallel Resume Track Evaluation</h3>
+                </div>
+                <span id="tailor-gate-verdict-badge" class="badge badge-java">Evaluating...</span>
+              </div>
+              <div id="tailor-gate-comparison-grid" class="gate-comparison-grid"></div>
+            </div>
+
+            <!-- Step 4 & 5 Output: Side-by-Side LaTeX Code Editor & 1-Page PDF Preview Workbench -->
+            <div id="tailor-workbench-grid" class="tailor-workbench-grid">
+              <!-- Left Pane: Tailored LaTeX Source Editor -->
+              <div class="studio-card workbench-pane">
+                <div class="studio-card-header">
+                  <div>
+                    <span class="step-kicker">STEP 4 · TAILORED LATEX (.TEX) SOURCE</span>
+                    <h3>LaTeX Resume Editor</h3>
+                  </div>
+                  <div style="display:flex; gap:0.4rem; flex-wrap:wrap; align-items:center;">
+                    <span id="tailor-selected-resume-badge" class="badge badge-java">Resume A — Java / Spring Boot</span>
+                    <span id="tailor-supervisor-score-badge" class="badge badge-sponsor">Supervisor Ready</span>
+                  </div>
+                </div>
+
+                <div class="workbench-toolbar">
+                  <button type="button" id="btn-recompile-latex" class="btn btn-primary btn-sm">
+                    🔄 Compile LaTeX → PDF
+                  </button>
+                  <button type="button" id="btn-copy-latex" class="btn btn-secondary btn-sm">
+                    📋 Copy .tex
+                  </button>
+                  <button type="button" id="btn-download-tex" class="btn btn-secondary btn-sm">
+                    💾 Download .tex
+                  </button>
+                </div>
+
+                <textarea
+                  id="tailor-latex-editor"
+                  class="latex-code-editor"
+                  spellcheck="false"
+                  aria-label="Tailored LaTeX Resume Code"
+                ></textarea>
+              </div>
+
+              <!-- Right Pane: Live 1-Page PDF Viewer & Download -->
+              <div class="studio-card workbench-pane">
+                <div class="studio-card-header">
+                  <div>
+                    <span class="step-kicker">STEP 5 · COMPILED 1-PAGE PDF</span>
+                    <h3 id="tailor-pdf-filename-label">AnilKumarResume_Tailored.pdf</h3>
+                  </div>
+                  <span id="tailor-pdf-status-badge" class="badge badge-genai">Click Compile or Run Pipeline</span>
+                </div>
+
+                <div class="workbench-toolbar">
+                  <button type="button" id="btn-download-tailored-pdf" class="btn btn-primary btn-sm" disabled>
+                    📥 Download Tailored PDF
+                  </button>
+                  <button type="button" id="btn-open-pdf-tab" class="btn btn-secondary btn-sm" disabled>
+                    ↗ Open PDF in New Tab
+                  </button>
+                  <button type="button" id="btn-apply-and-track" class="btn btn-accent btn-sm">
+                    🚀 Log as Applied &amp; Open Job Link
+                  </button>
+                </div>
+
+                <div class="pdf-preview-container">
+                  <iframe id="tailor-pdf-iframe" class="pdf-preview-iframe" title="Compiled Resume PDF Preview" hidden></iframe>
+                  <div id="tailor-pdf-placeholder" class="pdf-preview-placeholder">
+                    <div class="empty-icon">📄</div>
+                    <h4>1-Page PDF Preview</h4>
+                    <p>
+                      Run the AI Tailor pipeline above or click <strong>"🔄 Compile LaTeX → PDF"</strong> to render your live 1-page PDF right here.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Sticky AI Companion Chat (gpt-5-chat-himanshuL) -->
+          <aside class="tailor-companion-column">
+            <div class="studio-card companion-card">
+              <div class="studio-card-header">
+                <div>
+                  <span class="step-kicker">AZURE OPENAI COMPANION</span>
+                  <h3>💬 AI Resume &amp; Career Copilot</h3>
+                </div>
+                <button type="button" id="btn-clear-companion-chat" class="btn btn-secondary btn-sm" title="Clear chat">
+                  Clear
+                </button>
+              </div>
+
+              <div class="companion-quick-prompts">
+                <button type="button" class="ai-quick-prompt-btn" data-prompt="Analyze the loaded job and tell me my top 3 strengths and any missing ATS gaps I should address.">
+                  🎯 Analyze ATS Gaps
+                </button>
+                <button type="button" class="ai-quick-prompt-btn" data-prompt="Write a concise, high-converting LinkedIn DM to the hiring manager for this role highlighting my Airtel scale and NIT Bhopal background.">
+                  💬 Hiring Manager DM
+                </button>
+                <button type="button" class="ai-quick-prompt-btn" data-prompt="Rewrite my top 2 Airtel bullet points to maximally align with this job description without fabricating metrics.">
+                  ✍️ Rewrite Top Bullets
+                </button>
+                <button type="button" class="ai-quick-prompt-btn" data-prompt="What technical and system design interview questions should I expect for this specific role and company?">
+                  🧠 Interview Prep
+                </button>
+              </div>
+
+              <div id="ai-companion-messages" class="ai-companion-messages" aria-live="polite">
+                <div class="ai-msg ai-msg-assistant">
+                  <strong>🤖 AI Companion (gpt-5-chat-himanshuL):</strong>
+                  <p>Hi Anil! I have full context on your Airtel Senior SWE achievements (Java 21/Spring Boot 3 +40% perf, MongoDB -35% latency, Agentic AI SRE -90% RCA) and NIT Bhopal background. Paste a job URL on the left or ask me anything!</p>
+                </div>
+              </div>
+
+              <form id="ai-companion-form" class="ai-companion-form">
+                <textarea
+                  id="ai-companion-input"
+                  rows="2"
+                  placeholder="Ask your AI Companion about this job, ATS keywords, LaTeX tweaks, or visa strategy..."
+                  required
+                ></textarea>
+                <button type="submit" id="btn-send-companion" class="btn btn-primary btn-sm">
+                  Send to AI ↗
+                </button>
+              </form>
+            </div>
+          </aside>
+        </div>
       </div>
     </section>
 
-    <!-- VIEW 4: Dual-Resume Optimizer & ATS Checklist (Sheet 3 of jobs_tracker.xlsx) -->
-    <section id="view-resumes" class="view-panel" hidden>
-      <div class="resume-comparison-grid">
-        <article class="resume-card">
-          <div class="resume-card-header">
-            <span class="badge badge-java">Resume Track A</span>
-            <h3>Senior Software Engineer (Java | Spring Boot | Backend)</h3>
+    <!-- ======================================================================
+         VIEW 3: KANBAN BOARD
+         ====================================================================== -->
+    <section id="view-kanban" class="view-panel" hidden="until-found">
+      <div class="kanban-board" id="kanban-container"></div>
+    </section>
+
+    <!-- ======================================================================
+         VIEW 4: WORLD VISA HUB EXPLORER
+         ====================================================================== -->
+    <section id="view-strategy" class="view-panel" hidden="until-found">
+      <div class="section-header">
+        <div>
+          <h2>🌍 Worldwide Visa, Tax &amp; Sponsorship Playbooks</h2>
+          <p>Curated relocation intelligence across Europe, Middle East, APAC, Americas &amp; Global Remote — plus custom playbooks for any country.</p>
+        </div>
+        <div class="strategy-header-controls">
+          <input type="search" id="strategy-search-input" placeholder="Search country, visa route, tax perk, sponsor..." aria-label="Search country strategies">
+          <button type="button" id="btn-add-country-inline" class="btn btn-primary">➕ Add / Edit Country Playbook</button>
+        </div>
+      </div>
+      <div class="strategy-grid" id="strategy-cards-container"></div>
+    </section>
+
+    <!-- ======================================================================
+         VIEW 5: ANALYTICS & FOLLOW-UP RADAR
+         ====================================================================== -->
+    <section id="view-analytics" class="view-panel" hidden="until-found">
+      <div class="analytics-grid">
+        <article class="analytics-card">
+          <h3>📊 Pipeline Funnel by Stage</h3>
+          <p class="card-sub">Distribution of filtered applications across hiring stages</p>
+          <div id="chart-stage-bars" class="bar-chart"></div>
+        </article>
+
+        <article class="analytics-card">
+          <h3>🌍 Applications by Country &amp; Region</h3>
+          <p class="card-sub">Geographic distribution of your international search</p>
+          <div id="chart-country-bars" class="bar-chart"></div>
+        </article>
+
+        <article class="analytics-card">
+          <h3>⚡ Resume Track Performance</h3>
+          <p class="card-sub">Applications &amp; interview conversion across all active resume tracks</p>
+          <div id="chart-track-split" class="bar-chart"></div>
+        </article>
+
+        <article class="analytics-card">
+          <h3>⏰ Upcoming &amp; Overdue Follow-Up Radar</h3>
+          <p class="card-sub">Send a polite recruiter nudge 7 days after applying</p>
+          <div id="followup-radar-list" class="followup-list"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VIEW 6: OUTREACH PITCH STUDIO & RESUME CHECKLIST
+         ====================================================================== -->
+    <section id="view-resumes" class="view-panel" hidden="until-found">
+      <div class="pitch-studio-card">
+        <div class="section-header">
+          <div>
+            <h2>🎙️ Relocation Recruiter Outreach &amp; Cold Pitch Generator</h2>
+            <p>Auto-populates with your Airtel (350M+ scale) &amp; NIT Bhopal metrics plus the target country's visa route across any resume track.</p>
           </div>
-          <p class="pretty-text">
-            <strong>Best For:</strong> High-throughput Backend, Distributed Systems, Fintech, Payments, Order Management, and Core Platform Engineering roles in
-            <strong>Germany 🇩🇪, Netherlands 🇳🇱, UK 🇬🇧, Ireland 🇮🇪, Singapore 🇸🇬, Australia 🇦🇺, and UAE (Dubai) 🇦🇪</strong>.
-          </p>
+          <div class="pitch-selector-wrap">
+            <label for="pitch-select-app">Load from Application:</label>
+            <select id="pitch-select-app">
+              <option value="">— Custom / Select Tracked Application —</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pitch-inputs-grid">
+          <div class="field">
+            <label for="pitch-company">Target Company</label>
+            <input type="text" id="pitch-company" value="Booking.com">
+          </div>
+          <div class="field">
+            <label for="pitch-role">Target Role</label>
+            <input type="text" id="pitch-role" value="Senior Java Backend Engineer">
+          </div>
+          <div class="field">
+            <label for="pitch-country">Target Country</label>
+            <input type="text" id="pitch-country" list="world-countries-datalist" value="Netherlands">
+          </div>
+          <div class="field">
+            <label for="pitch-visa">Visa Pathway</label>
+            <input type="text" id="pitch-visa" value="Highly Skilled Migrant (Kennismigrant) + 30% Ruling">
+          </div>
+          <div class="field">
+            <label for="pitch-track">Resume Angle / Track (Unlimited)</label>
+            <input type="text" id="pitch-track" list="resume-tracks-datalist" value="Java / Spring Boot Backend" placeholder="Select or type any resume track...">
+          </div>
+        </div>
+
+        <div class="pitch-templates-grid">
+          <div class="pitch-box">
+            <div class="pitch-box-head">
+              <h4>1. LinkedIn Connection Note (&le;300 chars)</h4>
+              <button type="button" class="btn btn-secondary btn-sm copy-tpl-btn" data-copy-target="tpl-linkedin-note">📋 Copy</button>
+            </div>
+            <pre id="tpl-linkedin-note" class="pitch-pre"></pre>
+          </div>
+
+          <div class="pitch-box">
+            <div class="pitch-box-head">
+              <h4>2. Hiring Manager / Tech Lead Cold Email</h4>
+              <button type="button" class="btn btn-secondary btn-sm copy-tpl-btn" data-copy-target="tpl-cold-email">📋 Copy</button>
+            </div>
+            <pre id="tpl-cold-email" class="pitch-pre"></pre>
+          </div>
+
+          <div class="pitch-box">
+            <div class="pitch-box-head">
+              <h4>3. 7-Day Follow-Up Nudge</h4>
+              <button type="button" class="btn btn-secondary btn-sm copy-tpl-btn" data-copy-target="tpl-followup-msg">📋 Copy</button>
+            </div>
+            <pre id="tpl-followup-msg" class="pitch-pre"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Track Resume Library Showcase Cards (Dynamically rendered from all saved Base LaTeX Resumes) -->
+      <div class="section-header" style="margin: 1.25rem 0 0.75rem;">
+        <div>
+          <h3>📚 Active Base Resume Tracks (<span id="showcase-resume-count">4</span> Unlimited Tracks)</h3>
+          <p class="card-sub">Every saved base LaTeX resume is scored in parallel during AI tailoring. Add as many specialized tracks as you want.</p>
+        </div>
+        <button type="button" id="btn-open-resume-library-from-view" class="btn btn-secondary btn-sm">
+          ➕ Add / Manage Base LaTeX Resumes
+        </button>
+      </div>
+      <div id="resume-tracks-showcase-grid" class="resume-comparison-grid">
+        <article class="resume-card resume-java">
+          <div class="resume-card-head">
+            <span class="badge badge-java">RES-JAVA · Core Distributed Systems</span>
+            <h3>☕ Senior Java / Spring Boot / Kafka Track</h3>
+          </div>
           <ul class="resume-highlights">
-            <li><strong>Core Hook:</strong> Enterprise Migration to Spring Boot 3 &amp; Java 21 (Virtual Threads) yielding 40% runtime improvement.</li>
-            <li><strong>Scale Proof:</strong> Airtel Thanks Event-Driven Architecture (Kafka, RabbitMQ, Solace) + MongoDB Change Streams + Aerospike.</li>
-            <li><strong>Resilience:</strong> Circuit Breaker pattern (Resilience4j) &amp; 85% → 99% transactional consistency.</li>
+            <li><strong>Spring Boot 2 &rarr; 3 &amp; Java 8 &rarr; 21 Migration:</strong> +40% service performance &amp; -25% memory footprint across Airtel cloud microservices.</li>
+            <li><strong>Event-Driven Architecture:</strong> MongoDB Change Streams &amp; Kafka/RabbitMQ/Solace cutting order processing latency by 35%.</li>
+            <li><strong>High-Throughput Caching:</strong> Aerospike + MySQL tuning boosting throughput by 30% for 350M+ telecom subscribers.</li>
           </ul>
         </article>
 
-        <article class="resume-card">
-          <div class="resume-card-header">
-            <span class="badge badge-genai">Resume Track B</span>
-            <h3>Senior Software Engineer | GenAI &amp; Agentic AI Engineer</h3>
+        <article class="resume-card resume-genai">
+          <div class="resume-card-head">
+            <span class="badge badge-genai">RES-GENAI · Applied AI &amp; Platform Engineering</span>
+            <h3>🤖 Senior GenAI / Agentic AI / Python Track</h3>
           </div>
-          <p class="pretty-text">
-            <strong>Best For:</strong> Applied AI Engineer, Agentic AI Architect, LLM Platform, and Autonomous SRE/DevOps roles in
-            <strong>USA 🇺🇸 (YC/O-1A/Remote), UAE (Abu Dhabi G42/AI71) 🇦🇪, UK 🇬🇧, Canada 🇨🇦, Singapore (SOL +20 Bonus) 🇸🇬, and Switzerland 🇨🇭</strong>.
-          </p>
           <ul class="resume-highlights">
-            <li><strong>Core Hook:</strong> Production Agentic AI System for SRE Operations (GPT-4, Claude, CrewAI, ReAct) cutting incident RCA time by 90%.</li>
-            <li><strong>AI Stack:</strong> Multi-Agent Orchestration, Advanced Prompt Engineering, RAG Pipelines, FAISS/VectorDB, FastAPI + Java/Spring Boot.</li>
-            <li><strong>Differentiator:</strong> Rare combination of real production distributed backend (Kafka/Spring) + Autonomous LLM Agents.</li>
+            <li><strong>Autonomous Multi-Agent SRE Platform:</strong> CrewAI + FastAPI + React cutting production Root Cause Analysis time by 90%.</li>
+            <li><strong>Production RAG &amp; Vector Search:</strong> FAISS + VectorDB + GPT-4/Claude correlating Kibana logs, metrics, and code diffs.</li>
+            <li><strong>Hybrid Backend + AI Edge:</strong> Combines 4+ YoE enterprise Java/Kafka reliability with production LLM orchestration.</li>
           </ul>
         </article>
       </div>
 
-      <div class="checklist-panel">
-        <h3>Pre-Application Resume &amp; Dossier Checklist (Synced with <code>Resume_Checklist</code> Sheet)</h3>
-        <div class="table-container" tabindex="0">
+      <!-- Interactive Pre-Application Checklist -->
+      <div class="checklist-card">
+        <div class="section-header">
+          <div>
+            <h3>✅ International Resume &amp; Relocation Readiness Checklist</h3>
+            <p id="checklist-progress-label">0 of 0 completed (0%) — synced to Supabase</p>
+          </div>
+          <form id="add-checklist-form" class="inline-add-form">
+            <input type="text" id="new-chk-category" placeholder="Category (e.g. Visa)" required>
+            <input type="text" id="new-chk-item" placeholder="New checklist action item..." required>
+            <button type="submit" class="btn btn-primary btn-sm">➕ Add Item</button>
+          </form>
+        </div>
+
+        <div class="table-responsive">
           <table class="jobs-table">
             <thead>
               <tr>
-                <th scope="col">Done</th>
-                <th scope="col">Target Resume</th>
-                <th scope="col">Category</th>
-                <th scope="col">Action Item</th>
-                <th scope="col">Recruiter / ATS Impact</th>
+                <th style="width: 70px">Done</th>
+                <th>Track</th>
+                <th>Category</th>
+                <th>Action Item</th>
+                <th>Expected Impact</th>
+                <th style="width: 70px">Delete</th>
               </tr>
             </thead>
-            <tbody id="checklist-table-body">
-              <!-- Populated from Resume_Checklist sheet -->
-            </tbody>
+            <tbody id="checklist-table-body"></tbody>
           </table>
-        </div>
-      </div>
-
-      <div class="outreach-templates-panel">
-        <h3>High-Conversion Cold Outreach Templates (LinkedIn Recruiter / Hiring Manager)</h3>
-        <div class="template-grid">
-          <figure class="template-box">
-            <figcaption>Template 1: Java 21 / Spring Boot / Distributed Systems Roles (EU, UK, SG, AU, UAE)</figcaption>
-            <pre tabindex="0"><code id="tpl-java">Hi [Name], I noticed your team at [Company] is hiring a Senior Backend Engineer in [City]. I have 4+ years at Bharti Airtel (350M+ users, NIT Bhopal CSE) architecting Java 21, Spring Boot 3, and Kafka/RabbitMQ microservices handling millions of daily events. I'm relocating to [Country] (eligible for [EU Blue Card - Anabin H+ / Skilled Worker Visa]). Would love to share my resume if there's a fit!</code></pre>
-            <button type="button" class="btn btn-secondary btn-sm copy-tpl-btn" data-copy-target="tpl-java">Copy Java Pitch</button>
-          </figure>
-
-          <figure class="template-box">
-            <figcaption>Template 2: GenAI / Agentic AI / Autonomous SRE Roles (US, UK, UAE G42, CA, SG)</figcaption>
-            <pre tabindex="0"><code id="tpl-genai">Hi [Name], saw you're scaling the AI engineering team at [Company]. At Airtel (NIT Bhopal CSE), I built a production Multi-Agent AI system (GPT-4, Claude, CrewAI, RAG, FastAPI + Java/Kafka) that automated SRE root-cause analysis and cut incident resolution time by 90%. I'm open to relocating to [City] / remote collaboration—would you be open to a quick look at my profile?</code></pre>
-            <button type="button" class="btn btn-secondary btn-sm copy-tpl-btn" data-copy-target="tpl-genai">Copy GenAI Pitch</button>
-          </figure>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="app-footer">
-    <p>
-      <strong>Excel-as-Backend Architecture:</strong> Reads <code>./jobs_tracker.xlsx</code> automatically on GitHub Pages load,
-      persists live edits in browser storage, exports multi-sheet <code>.xlsx</code> workbooks, and supports direct GitHub Repository commits.
-    </p>
-    <button type="button" class="btn btn-ghost btn-sm" id="btn-reset-demo">
-      Reload Original <code>jobs_tracker.xlsx</code> from Repo
-    </button>
-  </footer>
-
-  <!-- MODAL 1: Add / Edit Job Application (Native <dialog closedby="any">) -->
-  <dialog id="application-dialog" closedby="any" aria-labelledby="dialog-app-title">
-    <form id="application-form" method="dialog" novalidate>
-      <header class="dialog-header">
-        <h2 id="dialog-app-title">Add Job Application</h2>
-        <button type="button" class="btn btn-icon" id="btn-close-app-dialog" aria-label="Close modal">✕</button>
-      </header>
-
-      <div class="dialog-body form-grid">
-        <input type="hidden" id="field-id" name="ID">
-
-        <div class="field">
-          <label for="field-country">Country <span aria-hidden="true">*</span></label>
-          <span id="hint-country" class="hint">Select one of your 10 target countries</span>
-          <select id="field-country" name="Country" required aria-describedby="hint-country">
-            <option value="Germany">🇩🇪 Germany</option>
-            <option value="Netherlands">🇳🇱 Netherlands</option>
-            <option value="United Kingdom">🇬🇧 United Kingdom</option>
-            <option value="UAE">🇦🇪 UAE</option>
-            <option value="Ireland">🇮🇪 Ireland</option>
-            <option value="Singapore">🇸🇬 Singapore</option>
-            <option value="Australia">🇦🇺 Australia</option>
-            <option value="Canada">🇨🇦 Canada</option>
-            <option value="Switzerland">🇨🇭 Switzerland</option>
-            <option value="USA">🇺🇸 USA</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="field-city">City / Location <span aria-hidden="true">*</span></label>
-          <span id="hint-city" class="hint">e.g., Berlin, Amsterdam, London, Dubai</span>
-          <input
-            type="text"
-            id="field-city"
-            name="City"
-            required
-            placeholder="Berlin"
-            aria-describedby="hint-city"
-          >
-          <div class="error-msg"><span aria-hidden="true">❌</span> Please enter the target city or location.</div>
-        </div>
-
-        <div class="field">
-          <label for="field-company">Company Name <span aria-hidden="true">*</span></label>
-          <span id="hint-company" class="hint">Target employer with visa sponsorship or remote USD</span>
-          <input
-            type="text"
-            id="field-company"
-            name="Company"
-            required
-            placeholder="e.g., Zalando, Booking.com, Careem"
-            aria-describedby="hint-company"
-          >
-          <div class="error-msg"><span aria-hidden="true">❌</span> Company name is required.</div>
-        </div>
-
-        <div class="field">
-          <label for="field-role">Job Title / Role <span aria-hidden="true">*</span></label>
-          <span id="hint-role" class="hint">Exact role title from the job posting</span>
-          <input
-            type="text"
-            id="field-role"
-            name="Role"
-            required
-            placeholder="e.g., Senior Backend Engineer (Java 21)"
-            aria-describedby="hint-role"
-          >
-          <div class="error-msg"><span aria-hidden="true">❌</span> Role title is required.</div>
-        </div>
-
-        <div class="field">
-          <label for="field-resume">Resume Track Used <span aria-hidden="true">*</span></label>
-          <span id="hint-resume" class="hint">Choose which of your 2 resumes was submitted</span>
-          <select id="field-resume" name="Resume_Track" required aria-describedby="hint-resume">
-            <option value="Java / Spring Boot Backend">☕ Resume A: Java / Spring Boot Backend</option>
-            <option value="GenAI / Agentic AI">🤖 Resume B: GenAI / Agentic AI</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="field-status">Application Stage <span aria-hidden="true">*</span></label>
-          <span id="hint-status" class="hint">Current funnel milestone</span>
-          <select id="field-status" name="Status" required aria-describedby="hint-status">
-            <option value="Wishlist">Wishlist</option>
-            <option value="Applied">Applied</option>
-            <option value="OA / Coding Test">OA / Coding Test</option>
-            <option value="Recruiter Screen">Recruiter Screen</option>
-            <option value="Technical Interview">Technical Interview</option>
-            <option value="Final Round">Final Round</option>
-            <option value="Offer">Offer</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="field-priority">Priority</label>
-          <span id="hint-priority" class="hint">Focus effort on High ROI roles</span>
-          <select id="field-priority" name="Priority" aria-describedby="hint-priority">
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="field-sponsorship">Visa Sponsorship Type</label>
-          <span id="hint-sponsorship" class="hint">Sponsor verification status</span>
-          <select id="field-sponsorship" name="Visa_Sponsorship" aria-describedby="hint-sponsorship">
-            <option value="Verified Sponsor">Verified Sponsor</option>
-            <option value="Sponsorship Available">Sponsorship Available</option>
-            <option value="Internal Transfer / L-1">Internal Transfer / L-1</option>
-            <option value="Remote USD">Remote USD</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="field-visa-type">Target Work Permit / Visa</label>
-          <span id="hint-visa-type" class="hint">Auto-filled when you pick a country</span>
-          <input
-            type="text"
-            id="field-visa-type"
-            name="Visa_Type"
-            placeholder="e.g., EU Blue Card"
-            aria-describedby="hint-visa-type"
-          >
-        </div>
-
-        <div class="field">
-          <label for="field-salary">Expected Salary Range</label>
-          <span id="hint-salary" class="hint">Local currency range (check visa threshold)</span>
-          <input
-            type="text"
-            id="field-salary"
-            name="Salary_Range"
-            placeholder="e.g., €85,000 - €100,000"
-            aria-describedby="hint-salary"
-          >
-        </div>
-
-        <div class="field">
-          <label for="field-applied-date">Applied / Created Date</label>
-          <span id="hint-applied-date" class="hint">Date application was sent</span>
-          <input
-            type="date"
-            id="field-applied-date"
-            name="Applied_Date"
-            aria-describedby="hint-applied-date"
-          >
-        </div>
-
-        <div class="field">
-          <label for="field-followup-date">Follow-Up Reminder Date</label>
-          <span id="hint-followup-date" class="hint">Typically +7 days after applying</span>
-          <input
-            type="date"
-            id="field-followup-date"
-            name="Follow_Up_Date"
-            aria-describedby="hint-followup-date"
-          >
-        </div>
-
-        <div class="field field-span-2">
-          <label for="field-url">Job Posting / Career Portal URL</label>
-          <span id="hint-url" class="hint">Format: https://company.com/careers/...</span>
-          <input
-            type="url"
-            id="field-url"
-            name="Job_URL"
-            placeholder="https://jobs.zalando.com"
-            aria-describedby="hint-url"
-          >
-          <div class="error-msg"><span aria-hidden="true">❌</span> Please enter a valid URL starting with https:// or http://.</div>
-        </div>
-
-        <div class="field field-span-2">
-          <label for="field-contact">Recruiter / Referral Contact</label>
-          <span id="hint-contact" class="hint">Name, LinkedIn link, or NIT Bhopal alumni referral</span>
-          <input
-            type="text"
-            id="field-contact"
-            name="Contact_Recruiter"
-            placeholder="e.g., Sarah M. (Senior Tech Recruiter) / Alumni Referral"
-            aria-describedby="hint-contact"
-          >
-        </div>
-
-        <div class="field field-span-2">
-          <label for="field-notes">Notes, Tailoring &amp; Interview Feedback</label>
-          <span id="hint-notes" class="hint">Key resume bullets emphasized, OA links, or interview prep notes</span>
-          <textarea
-            id="field-notes"
-            name="Notes"
-            rows="3"
-            placeholder="e.g., Emphasized Java 21 Virtual Threads migration &amp; Kafka Change Streams..."
-            aria-describedby="hint-notes"
-          ></textarea>
-        </div>
+  <!-- ========================================================================
+       MODAL 1: ADD / EDIT JOB APPLICATION
+       ======================================================================== -->
+  <dialog id="application-dialog" class="app-dialog">
+    <form id="application-form" class="dialog-form" novalidate>
+      <div class="dialog-header">
+        <h2 id="dialog-app-title">Add Worldwide Job Application</h2>
+        <button type="button" id="btn-close-app-dialog" class="dialog-close" aria-label="Close modal">&times;</button>
       </div>
 
-      <footer class="dialog-footer">
-        <button type="button" class="btn btn-ghost" id="btn-cancel-app-dialog">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="btn-save-app">Save to Tracker</button>
-      </footer>
-    </form>
-  </dialog>
-
-  <!-- MODAL 2: GitHub Excel Backend Sync Settings (<dialog closedby="any">) -->
-  <dialog id="github-sync-dialog" closedby="any" aria-labelledby="dialog-gh-title">
-    <form id="github-sync-form" method="dialog" novalidate>
-      <header class="dialog-header">
-        <h2 id="dialog-gh-title">GitHub Pages &amp; Excel Backend Sync</h2>
-        <button type="button" class="btn btn-icon" id="btn-close-gh-dialog" aria-label="Close modal">✕</button>
-      </header>
-
       <div class="dialog-body">
-        <p class="pretty-text">
-          This dashboard uses <code>jobs_tracker.xlsx</code> as its backend database. You have <strong>3 seamless ways</strong> to keep your Excel file updated:
-        </p>
-        <ol class="sync-modes-list">
-          <li class="pretty-text">
-            <strong>Mode 1 — GitHub Pages Repo Read + Download:</strong> By default, the live site fetches <code>./jobs_tracker.xlsx</code> from your repository. Click <strong>Save <code>jobs_tracker.xlsx</code></strong> anytime to download the updated Excel sheet.
-          </li>
-          <li class="pretty-text">
-            <strong>Mode 2 — Direct Local Excel File Link:</strong> Click <strong>Import / Link <code>.xlsx</code></strong> in the top bar to open your local <code>jobs_tracker.xlsx</code> and write changes directly back to disk.
-          </li>
-          <li class="pretty-text">
-            <strong>Mode 3 — 1-Click Direct Commit to GitHub Repo (Below):</strong> Provide your GitHub repository details and a Fine-Grained Personal Access Token (with <code>Contents: Read &amp; Write</code> permission). Clicking <strong>Push <code>jobs_tracker.xlsx</code> to GitHub Now</strong> commits the updated Excel binary directly to your GitHub repo from the browser!
-          </li>
-        </ol>
+        <input type="hidden" id="field-id">
 
         <div class="form-grid">
           <div class="field">
-            <label for="gh-owner">GitHub Username / Org <span aria-hidden="true">*</span></label>
-            <span id="hint-gh-owner" class="hint">e.g., ak2697291</span>
-            <input type="text" id="gh-owner" required placeholder="ak2697291" aria-describedby="hint-gh-owner">
-            <div class="error-msg"><span aria-hidden="true">❌</span> Enter your GitHub username.</div>
+            <label for="field-country">Country (Any Country Worldwide) *</label>
+            <input type="text" id="field-country" list="world-countries-datalist" placeholder="e.g. Netherlands, Japan, Brazil..." required>
+            <span class="field-error">Please enter a country</span>
           </div>
 
           <div class="field">
-            <label for="gh-repo">Repository Name <span aria-hidden="true">*</span></label>
-            <span id="hint-gh-repo" class="hint">e.g., global-job-tracker</span>
-            <input type="text" id="gh-repo" required placeholder="global-job-tracker" aria-describedby="hint-gh-repo">
-            <div class="error-msg"><span aria-hidden="true">❌</span> Enter your repository name.</div>
+            <label for="field-region">World Region *</label>
+            <select id="field-region" required>
+              <option value="Europe">Europe</option>
+              <option value="Middle East">Middle East</option>
+              <option value="Asia-Pacific">Asia-Pacific</option>
+              <option value="Americas">Americas</option>
+              <option value="Africa">Africa</option>
+              <option value="Remote / Global">Remote / Global</option>
+            </select>
           </div>
 
           <div class="field">
-            <label for="gh-branch">Branch</label>
-            <span id="hint-gh-branch" class="hint">Default: main</span>
-            <input type="text" id="gh-branch" value="main" required aria-describedby="hint-gh-branch">
+            <label for="field-city">City / Hub *</label>
+            <input type="text" id="field-city" placeholder="e.g. Amsterdam, Tokyo, London" required>
+            <span class="field-error">Please enter a city</span>
           </div>
 
           <div class="field">
-            <label for="gh-path">Excel File Path in Repo</label>
-            <span id="hint-gh-path" class="hint">Relative to repo root</span>
-            <input type="text" id="gh-path" value="jobs_tracker.xlsx" required aria-describedby="hint-gh-path">
+            <label for="field-work-mode">Work Mode</label>
+            <select id="field-work-mode">
+              <option value="On-site / Relocation">✈️ On-site / Relocation</option>
+              <option value="Hybrid + Relocation">🏢 Hybrid + Relocation</option>
+              <option value="Remote Global">💻 Remote Global</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="field-company">Company Name *</label>
+            <input type="text" id="field-company" placeholder="e.g. Booking.com, Adyen, Careem" required>
+            <span class="field-error">Company name is required</span>
+          </div>
+
+          <div class="field">
+            <label for="field-role">Role / Title *</label>
+            <input type="text" id="field-role" placeholder="e.g. Senior Java Backend Engineer" required>
+            <span class="field-error">Role title is required</span>
+          </div>
+
+          <div class="field">
+            <label for="field-resume">Resume Track / Variant (Select or Type Any Track) *</label>
+            <input type="text" id="field-resume" list="resume-tracks-datalist" value="Java / Spring Boot Backend" placeholder="e.g. Java / Spring Boot, GenAI, Distributed Systems / SRE, Full-Stack..." required>
+            <span class="field-error">Please specify a resume track</span>
+          </div>
+
+          <div class="field">
+            <label for="field-status">Application Stage *</label>
+            <select id="field-status" required>
+              <option value="Wishlist">Wishlist</option>
+              <option value="Applied">Applied</option>
+              <option value="OA / Coding Test">OA / Coding Test</option>
+              <option value="Recruiter Screen">Recruiter Screen</option>
+              <option value="Technical Interview">Technical Interview</option>
+              <option value="Final Round">Final Round</option>
+              <option value="Offer">Offer</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="field-priority">Priority</label>
+            <select id="field-priority">
+              <option value="High">🔥 High</option>
+              <option value="Medium">⚡ Medium</option>
+              <option value="Low">🌱 Low</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="field-sponsorship">Visa Sponsorship Status</label>
+            <select id="field-sponsorship">
+              <option value="Verified Sponsor">✅ Verified Sponsor</option>
+              <option value="Likely Sponsor">🟡 Likely Sponsor</option>
+              <option value="Remote / EOR">💻 Remote / EOR</option>
+              <option value="Self-Sponsored Visa">🛂 Self-Sponsored Visa</option>
+              <option value="Unknown">❓ Unknown</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="field-visa-type">Visa / Work Permit Route</label>
+            <input type="text" id="field-visa-type" placeholder="e.g. EU Blue Card, Highly Skilled Migrant">
+          </div>
+
+          <div class="field">
+            <label for="field-salary">Target Salary Range</label>
+            <input type="text" id="field-salary" placeholder="e.g. €95,000 - €120,000">
+          </div>
+
+          <div class="field">
+            <label for="field-currency">Currency</label>
+            <input type="text" id="field-currency" placeholder="EUR, GBP, AED, SGD, JPY">
+          </div>
+
+          <div class="field">
+            <label for="field-excitement">Fit &amp; Excitement (1-5 ★)</label>
+            <select id="field-excitement">
+              <option value="5">★★★★★ (5/5 Dream Role)</option>
+              <option value="4">★★★★☆ (4/5 Strong Fit)</option>
+              <option value="3">★★★☆☆ (3/5 Solid Option)</option>
+              <option value="2">★★☆☆☆ (2/5 Backup)</option>
+              <option value="1">★☆☆☆☆ (1/5 Exploratory)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="field-applied-date">Applied Date</label>
+            <input type="date" id="field-applied-date">
+          </div>
+
+          <div class="field">
+            <label for="field-followup-date">Follow-Up Target Date</label>
+            <input type="date" id="field-followup-date">
           </div>
 
           <div class="field field-span-2">
-            <label for="gh-token">GitHub Personal Access Token (Stored only in your browser)</label>
-            <span id="hint-gh-token" class="hint">
-              Need a token with write access?
-              <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Global+Job+Tracker+Excel+Sync" target="_blank" rel="noopener noreferrer">
-                Generate 1-Click Classic Token (<code>repo</code> scope pre-selected) ↗
-              </a>
-            </span>
-            <input type="password" id="gh-token" placeholder="ghp_... or github_pat_..." aria-describedby="hint-gh-token">
+            <label for="field-url">Job Posting / Careers URL</label>
+            <input type="url" id="field-url" placeholder="https://careers.company.com/...">
+            <span class="field-error">Please enter a valid URL starting with http:// or https://</span>
+          </div>
+
+          <div class="field field-span-2">
+            <label for="field-contact">Recruiter / Hiring Manager / Referral Contact</label>
+            <input type="text" id="field-contact" placeholder="e.g. Name (Engineering Recruiter on LinkedIn)">
+          </div>
+
+          <div class="field field-span-2">
+            <label for="field-notes">Tailoring Angle &amp; Relocation Notes</label>
+            <textarea id="field-notes" rows="3" placeholder="Which Airtel project or metric resonates best here?"></textarea>
           </div>
         </div>
-
-        <details class="gh-troubleshoot-box">
-          <summary>⚠️ Fixing HTTP 403: &ldquo;Resource not accessible by personal access token&rdquo;</summary>
-          <ol class="sync-modes-list">
-            <li class="pretty-text">
-              <strong>If using a Fine-Grained Token (<code>github_pat_...</code>):</strong> Go to <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener noreferrer">GitHub Fine-Grained Tokens ↗</a>, open your token, and:
-              <br>• Change <strong>Repository access</strong> from <em>&ldquo;Public Repositories (read-only)&rdquo;</em> to <strong>&ldquo;Only select repositories&rdquo;</strong> (select your repo) or <strong>&ldquo;All repositories&rdquo;</strong>.
-              <br>• Under <strong>Permissions &rarr; Repository permissions &rarr; Contents</strong>, change access from <em>Read-only</em> to <strong>Read and write</strong>.
-            </li>
-            <li class="pretty-text">
-              <strong>If using a Classic Token (<code>ghp_...</code> — Easiest):</strong> Click <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Global+Job+Tracker+Excel+Sync" target="_blank" rel="noopener noreferrer">Generate Classic Token with <code>repo</code> scope ↗</a>, scroll down, click <strong>Generate token</strong>, and paste it above.
-            </li>
-          </ol>
-        </details>
-
-        <div id="gh-sync-diagnostic" class="gh-diagnostic" hidden role="alert"></div>
       </div>
 
-      <footer class="dialog-footer">
-        <button type="button" class="btn btn-ghost" id="btn-cancel-gh-dialog">Close</button>
-        <button type="button" class="btn btn-secondary" id="btn-test-gh-token">🔍 Verify Token Permissions</button>
-        <button type="button" class="btn btn-secondary" id="btn-save-gh-config">Save Config</button>
-        <button type="submit" class="btn btn-primary" id="btn-push-gh-now">
-          🚀 Push <code>jobs_tracker.xlsx</code> to GitHub Now
-        </button>
-      </footer>
+      <div class="dialog-footer">
+        <button type="button" id="btn-cancel-app-dialog" class="btn btn-secondary">Cancel</button>
+        <button type="submit" class="btn btn-primary">💾 Save to Supabase</button>
+      </div>
     </form>
   </dialog>
 
-  <!-- Toast Notification Container (Persistent Toast via popover="manual") -->
-  <div id="toast-popover" popover="manual" class="toast-notification" role="status" aria-live="polite">
-    <span id="toast-message">Saved to tracker!</span>
-    <button type="button" class="btn-toast-close" id="btn-close-toast" aria-label="Dismiss notification">✕</button>
-  </div>
+  <!-- ========================================================================
+       MODAL 2: ADD / CUSTOMIZE COUNTRY PLAYBOOK
+       ======================================================================== -->
+  <dialog id="country-playbook-dialog" class="app-dialog">
+    <form id="country-playbook-form" class="dialog-form" novalidate>
+      <div class="dialog-header">
+        <h2>🗺️ Customize Country Visa &amp; Relocation Playbook</h2>
+        <button type="button" id="btn-close-country-dialog" class="dialog-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="dialog-body">
+        <div class="form-grid">
+          <div class="field">
+            <label for="cp-country">Country Name *</label>
+            <input type="text" id="cp-country" list="world-countries-datalist" placeholder="e.g. Norway, New Zealand, Mexico..." required>
+          </div>
+
+          <div class="field">
+            <label for="cp-region">World Region *</label>
+            <select id="cp-region" required>
+              <option value="Europe">Europe</option>
+              <option value="Middle East">Middle East</option>
+              <option value="Asia-Pacific">Asia-Pacific</option>
+              <option value="Americas">Americas</option>
+              <option value="Africa">Africa</option>
+              <option value="Remote / Global">Remote / Global</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="cp-flag">Flag Emoji</label>
+            <input type="text" id="cp-flag" placeholder="🇳🇴">
+          </div>
+
+          <div class="field">
+            <label for="cp-tier">Market Priority Tier</label>
+            <select id="cp-tier">
+              <option value="Tier 1 — High Visa ROI">Tier 1 — High Visa ROI</option>
+              <option value="Tier 1 — Tax-Free / High Savings">Tier 1 — Tax-Free / High Savings</option>
+              <option value="Tier 1 — English Speaking">Tier 1 — English Speaking</option>
+              <option value="Tier 2 — English Tech Hub">Tier 2 — English Tech Hub</option>
+              <option value="Tier 2 — High Compensation">Tier 2 — High Compensation</option>
+              <option value="Custom Target Market">Custom Target Market</option>
+            </select>
+          </div>
+
+          <div class="field field-span-2">
+            <label for="cp-visa">Primary Visa / Work Permit Route *</label>
+            <input type="text" id="cp-visa" placeholder="e.g. EU Blue Card, Skilled Worker Visa" required>
+          </div>
+
+          <div class="field">
+            <label for="cp-salary">Salary Benchmark / Visa Floor</label>
+            <input type="text" id="cp-salary" placeholder="e.g. €75,000 - €110,000">
+          </div>
+
+          <div class="field">
+            <label for="cp-tax">Tax / PR / Relocation Advantage</label>
+            <input type="text" id="cp-tax" placeholder="e.g. 30% Tax Ruling, PR in 21 months">
+          </div>
+
+          <div class="field field-span-2">
+            <label for="cp-track">Recommended Resume Track</label>
+            <input type="text" id="cp-track" placeholder="e.g. Both Resumes (Java for FinTech, GenAI for AI Startups)">
+          </div>
+
+          <div class="field field-span-2">
+            <label for="cp-portals">Top Local &amp; Relocation Job Portals</label>
+            <input type="text" id="cp-portals" placeholder="e.g. LinkedIn, Relocate.me, Honeypot.io">
+          </div>
+
+          <div class="field field-span-2">
+            <label for="cp-companies">Top Visa-Sponsoring Employers</label>
+            <input type="text" id="cp-companies" placeholder="e.g. Booking.com, Adyen, Uber, Databricks">
+          </div>
+
+          <div class="field field-span-2">
+            <label for="cp-tip">Application &amp; Interview Strategy Tip</label>
+            <textarea id="cp-tip" rows="2" placeholder="Key advice for landing interviews in this country..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" id="btn-cancel-country-dialog" class="btn btn-secondary">Cancel</button>
+        <button type="submit" class="btn btn-primary">💾 Save Playbook to Supabase</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ========================================================================
+       MODAL 3: BASE LATEX RESUMES MANAGER & AZURE AI / PDF SETTINGS
+       ======================================================================== -->
+  <dialog id="ai-tailor-settings-dialog" class="app-dialog dialog-wide">
+    <div class="dialog-form">
+      <div class="dialog-header">
+        <h2>📚 Base LaTeX Resumes &amp; AI Companion Configuration</h2>
+        <button type="button" id="btn-close-tailor-settings" class="dialog-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="dialog-body">
+        <!-- Section A: Azure OpenAI & LaTeX-to-PDF Endpoints -->
+        <div class="settings-section-box">
+          <div class="section-header" style="margin-bottom: 0.75rem;">
+            <div>
+              <h3>🤖 Azure OpenAI (`gpt-5-chat-himanshuL`) &amp; LaTeX-to-PDF API</h3>
+              <p class="card-sub">Pre-configured with your Azure OpenAI deployment and Supabase `latexToPdfConverter` Edge Function.</p>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <button type="button" id="btn-test-ai-companion" class="btn btn-secondary btn-sm">🔌 Test AI Connection</button>
+              <button type="button" id="btn-save-ai-config" class="btn btn-primary btn-sm">💾 Save API Config</button>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field field-span-2">
+              <label for="ai-endpoint-input">Azure OpenAI Chat Completions URL</label>
+              <input type="url" id="ai-endpoint-input">
+            </div>
+            <div class="field">
+              <label for="ai-apikey-input">Azure OpenAI `api-key` Header</label>
+              <input type="password" id="ai-apikey-input">
+            </div>
+            <div class="field">
+              <label for="pdf-endpoint-input">Primary LaTeX-to-PDF Endpoint</label>
+              <input type="url" id="pdf-endpoint-input">
+            </div>
+            <input type="hidden" id="pdf-apikey-input">
+          </div>
+          <div id="ai-config-diagnostic" class="gh-diagnostic" hidden></div>
+        </div>
+
+        <!-- Section B: Saved Base LaTeX Resumes List -->
+        <div class="settings-section-box" style="margin-top: 1.25rem;">
+          <div class="section-header" style="margin-bottom: 0.75rem;">
+            <div>
+              <h3>📄 Saved Base LaTeX (`.tex`) Resumes (<span id="saved-resumes-count-badge">4</span> Active Variants)</h3>
+              <p class="card-sub">Maintain as many resume tracks as you want (Java, GenAI, Distributed Systems/SRE, Full-Stack, Python, Data, FinTech, Staff, etc.). The AI Relatability Gate scores <strong>every saved resume in parallel</strong> and selects the best-matching `.tex` base.</p>
+            </div>
+            <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="button" id="btn-new-blank-resume" class="btn btn-primary btn-sm">
+                ➕ New Resume Variant
+              </button>
+              <button type="button" id="btn-reset-default-resumes" class="btn btn-secondary btn-sm">
+                🔄 Restore 4 Starter Resumes (Java, GenAI, SRE, Full-Stack)
+              </button>
+            </div>
+          </div>
+
+          <div id="latex-resumes-manager-list" class="latex-resumes-list"></div>
+
+          <!-- Form to Add or Edit Any Number of Base LaTeX Resumes -->
+          <form id="latex-resume-form" style="margin-top: 1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; font-size: 0.94rem;">✏️ Add New or Update Existing Base LaTeX Resume (Unlimited Tracks)</h4>
+              <button type="button" id="btn-ai-generate-base-tex" class="btn btn-accent btn-sm" title="Use GPT-5 to generate a complete 1-page LaTeX resume tailored to the track category entered below">
+                ✨ AI-Generate Base `.tex` for This Track
+              </button>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="lr-id">Resume ID (Unique Key)</label>
+                <input type="text" id="lr-id" placeholder="e.g. RES-JAVA, RES-SRE, RES-FULLSTACK, RES-PYTHON">
+              </div>
+              <div class="field">
+                <label for="lr-name">Resume Display Name *</label>
+                <input type="text" id="lr-name" placeholder="e.g. Resume C — Distributed Systems & Cloud SRE" required>
+              </div>
+              <div class="field field-span-2">
+                <label for="lr-track">Associated Track Category (Type ANY custom track or click a quick preset below) *</label>
+                <input type="text" id="lr-track" list="resume-tracks-datalist" placeholder="Type any custom track (e.g. Distributed Systems / Cloud SRE, Full-Stack, Python Backend, FinTech, Staff Engineer)..." required>
+                <div class="quick-track-presets" style="display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.45rem;">
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Java / Spring Boot Backend" data-id="RES-JAVA" data-name="Resume A — Senior Java 21 / Spring Boot / Kafka">☕ Java / Spring Boot</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="GenAI / Agentic AI Engineer" data-id="RES-GENAI" data-name="Resume B — Senior GenAI / Agentic AI / RAG">🤖 GenAI / Agentic AI</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Distributed Systems / Cloud SRE" data-id="RES-DIST-SRE" data-name="Resume C — Distributed Systems, Cloud & SRE Platform">☁️ Distributed Systems / SRE</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Full-Stack (React + Java/Python)" data-id="RES-FULLSTACK" data-name="Resume D — Senior Full-Stack Engineer (React + Java/Python)">🌐 Full-Stack (React + Backend)</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Python / FastAPI Backend" data-id="RES-PYTHON" data-name="Resume E — Senior Python / FastAPI & Microservices">🐍 Python / FastAPI</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Data / Kafka Streaming Platform" data-id="RES-DATA-KAFKA" data-name="Resume F — Real-Time Data & Kafka Streaming Engineer">📊 Data / Kafka Streaming</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="FinTech / High-Throughput Payments" data-id="RES-FINTECH" data-name="Resume G — FinTech & Low-Latency Payments Engineer">💳 FinTech / Payments</button>
+                  <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Staff / Lead Software Architect" data-id="RES-STAFF" data-name="Resume H — Lead / Staff Software Engineer">🏛️ Staff / Tech Lead</button>
+                </div>
+              </div>
+              <div class="field field-span-2">
+                <label for="lr-code">Complete Compilable LaTeX (`.tex`) Code *</label>
+                <textarea id="lr-code" class="latex-code-editor" style="min-height: 220px;" placeholder="\documentclass[letterpaper,11pt]{article}..." required></textarea>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              <span class="card-sub">Tip: Enter any custom Resume ID (e.g., <code>RES-FINTECH</code>) to create a brand-new resume slot, or select an existing ID to update it.</span>
+              <button type="submit" class="btn btn-primary btn-sm">💾 Save Base LaTeX Resume</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" id="btn-close-tailor-settings-footer" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================
+       MODAL 4: SUPABASE DATABASE CONNECTION SETTINGS
+       ======================================================================== -->
+  <dialog id="supabase-settings-dialog" class="app-dialog">
+    <form id="supabase-settings-form" class="dialog-form" novalidate>
+      <div class="dialog-header">
+        <h2>🗄️ Supabase PostgreSQL Cloud Sync</h2>
+        <button type="button" id="btn-close-sb-dialog" class="dialog-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="dialog-lead">
+          Connected to your Supabase project (<code>rudjdpnltcenvipuqerf</code>). Run <code>sql_schema.sql</code> and <code>update_sql_schema.sql</code> in your Supabase SQL Editor to initialize all tables.
+        </p>
+
+        <div class="form-grid">
+          <div class="field field-span-2">
+            <label for="sb-url">Supabase Project URL *</label>
+            <input type="url" id="sb-url" required>
+          </div>
+
+          <div class="field field-span-2">
+            <label for="sb-key">Supabase Publishable / Anon Key *</label>
+            <input type="text" id="sb-key" required>
+          </div>
+        </div>
+
+        <div id="sb-diagnostic-box" class="gh-diagnostic" hidden></div>
+
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem;">
+          <button type="button" id="btn-test-sb-conn" class="btn btn-secondary btn-sm">🔍 Test Connection</button>
+          <button type="button" id="btn-seed-supabase-now" class="btn btn-secondary btn-sm">🌱 Push Default Seed Data to Supabase</button>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" id="btn-cancel-sb-dialog" class="btn btn-secondary">Close</button>
+        <button type="submit" class="btn btn-primary">Save &amp; Sync</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Global Datalist for Unlimited Resume Tracks (Dynamically Populated by app.js) -->
+  <datalist id="resume-tracks-datalist">
+    <option value="Java / Spring Boot Backend"></option>
+    <option value="GenAI / Agentic AI Engineer"></option>
+    <option value="Distributed Systems / Cloud SRE"></option>
+    <option value="Full-Stack (React + Java/Python)"></option>
+    <option value="Python / FastAPI Backend"></option>
+    <option value="Data / Kafka Streaming Platform"></option>
+    <option value="FinTech / High-Throughput Payments"></option>
+    <option value="Staff / Lead Software Architect"></option>
+  </datalist>
 </body>
 </html>
