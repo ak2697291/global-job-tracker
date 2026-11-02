@@ -49,12 +49,7 @@
           </div>
           <p class="brand-subtitle">
             Senior SWE @ Airtel (4+ YoE · 350M+ Users) · B.Tech CSE NIT Bhopal ·
-            <span id="header-track-chips" class="header-track-chips">
-              <span class="track-chip java-chip">Java 21 / Spring Boot 3</span>
-              <span class="track-chip genai-chip">GenAI / Agentic AI</span>
-              <span class="track-chip">Distributed Systems / SRE</span>
-              <span class="track-chip">Full-Stack / Custom Tracks</span>
-            </span>
+            <span id="header-track-chips" class="header-track-chips"></span>
           </p>
         </div>
       </div>
@@ -586,7 +581,7 @@
           <p>Curated relocation intelligence across Europe, Middle East, APAC, Americas &amp; Global Remote — plus custom playbooks for any country.</p>
         </div>
         <div class="strategy-header-controls">
-          <input type="search" id="strategy-search-input" placeholder="Search country, visa route, tax perk, sponsor..." aria-label="Search country strategies">
+          <input type="search" id="strategy-search-input" placeholder="Search country, visa route, tax perk, sponsor, or your remarks..." aria-label="Search country strategies">
           <button type="button" id="btn-add-country-inline" class="btn btn-primary">➕ Add / Edit Country Playbook</button>
         </div>
       </div>
@@ -692,41 +687,17 @@
         </div>
       </div>
 
-      <!-- Multi-Track Resume Library Showcase Cards (Dynamically rendered from all saved Base LaTeX Resumes) -->
+      <!-- Multi-Track Resume Library Showcase Cards (Fetched exclusively from Supabase public.latex_resumes) -->
       <div class="section-header" style="margin: 1.25rem 0 0.75rem;">
         <div>
-          <h3>📚 Active Base Resume Tracks (<span id="showcase-resume-count">4</span> Unlimited Tracks)</h3>
-          <p class="card-sub">Every saved base LaTeX resume is scored in parallel during AI tailoring. Add as many specialized tracks as you want.</p>
+          <h3>📚 Active Base Resume Tracks (<span id="showcase-resume-count">0</span> Supabase Resumes)</h3>
+          <p class="card-sub">Fetched exclusively from your Supabase <code>public.latex_resumes</code> database table. Every saved base LaTeX resume is scored in parallel during AI tailoring.</p>
         </div>
         <button type="button" id="btn-open-resume-library-from-view" class="btn btn-secondary btn-sm">
           ➕ Add / Manage Base LaTeX Resumes
         </button>
       </div>
-      <div id="resume-tracks-showcase-grid" class="resume-comparison-grid">
-        <article class="resume-card resume-java">
-          <div class="resume-card-head">
-            <span class="badge badge-java">RES-JAVA · Core Distributed Systems</span>
-            <h3>☕ Senior Java / Spring Boot / Kafka Track</h3>
-          </div>
-          <ul class="resume-highlights">
-            <li><strong>Spring Boot 2 &rarr; 3 &amp; Java 8 &rarr; 21 Migration:</strong> +40% service performance &amp; -25% memory footprint across Airtel cloud microservices.</li>
-            <li><strong>Event-Driven Architecture:</strong> MongoDB Change Streams &amp; Kafka/RabbitMQ/Solace cutting order processing latency by 35%.</li>
-            <li><strong>High-Throughput Caching:</strong> Aerospike + MySQL tuning boosting throughput by 30% for 350M+ telecom subscribers.</li>
-          </ul>
-        </article>
-
-        <article class="resume-card resume-genai">
-          <div class="resume-card-head">
-            <span class="badge badge-genai">RES-GENAI · Applied AI &amp; Platform Engineering</span>
-            <h3>🤖 Senior GenAI / Agentic AI / Python Track</h3>
-          </div>
-          <ul class="resume-highlights">
-            <li><strong>Autonomous Multi-Agent SRE Platform:</strong> CrewAI + FastAPI + React cutting production Root Cause Analysis time by 90%.</li>
-            <li><strong>Production RAG &amp; Vector Search:</strong> FAISS + VectorDB + GPT-4/Claude correlating Kibana logs, metrics, and code diffs.</li>
-            <li><strong>Hybrid Backend + AI Edge:</strong> Combines 4+ YoE enterprise Java/Kafka reliability with production LLM orchestration.</li>
-          </ul>
-        </article>
-      </div>
+      <div id="resume-tracks-showcase-grid" class="resume-comparison-grid"></div>
 
       <!-- Interactive Pre-Application Checklist -->
       <div class="checklist-card">
@@ -1001,6 +972,11 @@
             <label for="cp-tip">Application &amp; Interview Strategy Tip</label>
             <textarea id="cp-tip" rows="2" placeholder="Key advice for landing interviews in this country..."></textarea>
           </div>
+
+          <div class="field field-span-2">
+            <label for="cp-remarks">📝 My Personal Remarks / Notes for this Country</label>
+            <textarea id="cp-remarks" rows="3" placeholder="Add your personal remarks, contacts, visa checklist, cost-of-living notes, or target salary expectations for this country..."></textarea>
+          </div>
         </div>
       </div>
 
@@ -1057,15 +1033,15 @@
         <div class="settings-section-box" style="margin-top: 1.25rem;">
           <div class="section-header" style="margin-bottom: 0.75rem;">
             <div>
-              <h3>📄 Saved Base LaTeX (`.tex`) Resumes (<span id="saved-resumes-count-badge">4</span> Active Variants)</h3>
-              <p class="card-sub">Maintain as many resume tracks as you want (Java, GenAI, Distributed Systems/SRE, Full-Stack, Python, Data, FinTech, Staff, etc.). The AI Relatability Gate scores <strong>every saved resume in parallel</strong> and selects the best-matching `.tex` base.</p>
+              <h3>📄 Supabase Base LaTeX (`.tex`) Resumes (<span id="saved-resumes-count-badge">0</span> Active in DB)</h3>
+              <p class="card-sub">All base resumes are stored in and fetched directly from your Supabase <code>public.latex_resumes</code> table (no hardcoded resumes). The AI Relatability Gate scores <strong>every resume in Supabase in parallel</strong> and selects the best-matching `.tex` base.</p>
             </div>
             <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
               <button type="button" id="btn-new-blank-resume" class="btn btn-primary btn-sm">
                 ➕ New Resume Variant
               </button>
               <button type="button" id="btn-reset-default-resumes" class="btn btn-secondary btn-sm">
-                🔄 Restore 4 Starter Resumes (Java, GenAI, SRE, Full-Stack)
+                🔄 Sync Resumes from Supabase
               </button>
             </div>
           </div>

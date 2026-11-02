@@ -44,12 +44,13 @@ Contains **only** schema definitions, column migrations (`ALTER TABLE ... ADD CO
 3. **`public.resume_checklist`** (Primary Key: `id TEXT`)
    - Columns (7): `id`, `done` (`TEXT` — `'Yes'` or `'No'`), `resume_track`, `category`, `action_item`, `impact`, `sort_order` (+ `created_at`, `updated_at`).
 4. **`public.latex_resumes`** (Primary Key: `id TEXT`)
-   - Columns (5): `id`, `name`, `resume_track`, `latex_source`, `is_default` (`BOOLEAN`) (+ `created_at`, `updated_at`).
+   - Columns (5): `id`, `name`, `track_type`, `latex_code`, `is_default` (`BOOLEAN`) (+ `created_at`, `updated_at`).
+   - **Single Source of Truth Rule**: Base LaTeX resumes must **never** be hardcoded in `app.js` or `index.html`, and must **not** be cached in `localStorage`. Always fetch resumes directly from `public.latex_resumes` in Supabase via `fetchResumesFromSupabase()`.
 
 ### File 2: `update_sql_schema.sql` (Data Seeds & Incremental Updates)
 Contains `INSERT INTO ... VALUES ... ON CONFLICT (...) DO UPDATE` statements.
 - **Tuple Length Check**: Before saving any edit to `update_sql_schema.sql`, verify that **every row** in a multi-row `VALUES` block has the exact same number of elements as the `INSERT` column list (`12` for `country_strategies`, `7` for `resume_checklist`, `21` for `job_applications`, `5` for `latex_resumes`) to prevent PostgreSQL `ERROR: 42601: VALUES lists must all be the same length`.
-- **Payload Parity with `app.js`**: Every object in `DEFAULT_STRATEGIES`, `DEFAULT_CHECKLIST`, `DEFAULT_APPLICATIONS`, and `DEFAULT_LATEX_RESUMES` inside `app.js` must only contain keys that exist as columns in `sql_schema.sql` so PostgREST upserts (`sbUpsert`) never fail on unknown columns.
+- **Payload Parity with `app.js`**: Every object in `DEFAULT_STRATEGIES`, `DEFAULT_CHECKLIST`, and `DEFAULT_APPLICATIONS` inside `app.js` must only contain keys that exist as columns in `sql_schema.sql` so PostgREST upserts (`sbUpsert`) never fail on unknown columns.
 
 ---
 
@@ -77,14 +78,14 @@ Ported from the user's `ai_tailor_resume` Chrome Extension and integrated into `
 
 1. **Azure OpenAI Companion (`callAzureOpenAI`)**:
    - **Endpoint**: `https://airtel-azure-openai-test.openai.azure.com/openai/deployments/gpt-5-chat-himanshuL/chat/completions?api-version=2025-01-01-preview`
-   - **Headers**: `Content-Type: application/json`, `api-key: <AZURE_OPENAI_KEY>`
+   - **Headers**: `Content-Type: application/json`, `api-key: <AZURE_OPENAI_KEY>` (stored in `localStorage` via the AI Companion Settings dialog — never hardcode literal API keys in `app.js` so GitHub Push Protection `GH013` never blocks `git push`).
    - **Payload**: `{ messages: [...], max_completion_tokens: ... }` (Note: `gpt-5-chat-himanshuL` uses `max_completion_tokens`).
 2. **Job Link Scraper (`scrapeJobUrl`)**:
    - Scrapes any pasted Job URL via Jina Reader (`https://r.jina.ai/<url>`) with fallback to AllOrigins CORS HTML/JSON-LD extraction (`extractJobTextFromHtml`).
 3. **5-Stage Automated Tailoring Pipeline (`runFullAiTailorPipeline`)**:
    - **Step 1**: Scrape job link or read pasted JD text.
    - **Step 2**: Extract structured JD (`company_name`, `job_title`, `country`, `city`, `must_have_skills`, `nice_to_have_skills`, `ats_keywords`).
-   - **Step 3**: Run parallel **ATS & Relatability Gate** (`runAtsRelatabilityGateForResume`) across all saved base LaTeX resumes (`DEFAULT_LATEX_RESUMES`: Resume A Java Backend & Resume B GenAI/Agentic AI) and automatically pick the highest-scoring track.
+   - **Step 3**: Run parallel **ATS & Relatability Gate** across all base LaTeX resumes fetched from Supabase (`public.latex_resumes`) and automatically pick the highest-scoring track.
    - **Step 4**: Run the **Generator ↔ Supervisor LaTeX Tailoring Loop** (`tailorLatexResumeWithLoop`) with strict 1-page budget rules and `\usepackage{everypage}` guard.
    - **Step 5**: Compile tailored `.tex` to PDF (`compileAndPreviewPdf`) via `https://vaggbwodamenwlbxdicj.supabase.co/functions/v1/latexToPdfConverter` (with `Bearer sb_publishable_vL400zAs6QdUjeAzCoe-wA_A2RZHeUS`) and automatic fallback to `https://latex.ytotech.com/builds/sync`.
 4. **Download & Apply**:

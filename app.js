@@ -10,8 +10,8 @@ const DEFAULT_SUPABASE_KEY = "sb_publishable_2XQbGiSW2aQmFqGmTEs60Q_95W_7r5s";
 
 const DEFAULT_AZURE_OPENAI_ENDPOINT =
   "https://airtel-azure-openai-test.openai.azure.com/openai/deployments/gpt-5-chat-himanshuL/chat/completions?api-version=2025-01-01-preview";
-const DEFAULT_AZURE_OPENAI_KEY =
-  "AWr1197hee4ielQneqAORPxLeFaQt9XAJV6ISdPvxGVAzQO1ruTLJQQJ99BBACfhMk5XJ3w3AAABACOGsuDI";
+// Stored in localStorage via AI Companion Settings so GitHub Push Protection (GH013) never blocks git push
+const DEFAULT_AZURE_OPENAI_KEY = "";
 const DEFAULT_LATEX_PDF_ENDPOINT =
   "https://vaggbwodamenwlbxdicj.supabase.co/functions/v1/latexToPdfConverter";
 const DEFAULT_LATEX_PDF_KEY = "sb_publishable_vL400zAs6QdUjeAzCoe-wA_A2RZHeUS";
@@ -21,8 +21,8 @@ const STORAGE_KEYS = {
   sbConfig: "ak_world_supabase_config_v1",
   appsCache: "ak_world_apps_cache_v1",
   strategiesCache: "ak_world_strategies_cache_v1",
+  countryRemarks: "ak_world_country_remarks_v1",
   checklistCache: "ak_world_checklist_cache_v1",
-  latexResumesCache: "ak_world_latex_resumes_v1",
   aiConfig: "ak_world_ai_tailor_config_v1",
   theme: "color-scheme"
 };
@@ -624,440 +624,7 @@ const DEFAULT_CHECKLIST = [
   { id: "CHK-10", done: "No", resume_track: "Outreach Cadence", category: "Referral Rule of 48h", action_item: "Send tailored LinkedIn note (from Outreach Studio) to 1 NIT Bhopal/Airtel alum + 1 Hiring Manager within 24h of applying", impact: "Referrals convert at 12-18% vs 1.5% for cold portal applications", sort_order: 10 }
 ];
 
-const DEFAULT_LATEX_RESUMES = [
-  {
-    id: "RES-JAVA",
-    name: "Resume A — Java 21 / Spring Boot 3 Backend (Airtel)",
-    track_type: "Java / Spring Boot Backend",
-    is_default: true,
-    latex_code: String.raw`\documentclass[a4paper,10pt]{article}
-\usepackage[left=0.45in,top=0.4in,right=0.45in,bottom=0.4in]{geometry}
-\usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\usepackage{titlesec}
-\usepackage{xcolor}
-\usepackage{everypage}
-\AddEverypageHook{\ifnum\value{page}>1 \errmessage{Resume exceeds 1 page}\fi}
-
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
-\titlespacing{\section}{0pt}{6pt}{4pt}
-
-\newcommand{\resumeSubheading}[4]{
-  \noindent\textbf{#1} \hfill \textbf{#2} \\
-  \textit{#3} \hfill \textit{#4} \vspace{2pt}
-}
-\newcommand{\resumeProjectHeading}[2]{
-  \noindent\textbf{#1} \hfill \textit{#2} \vspace{2pt}
-}
-\newcommand{\resumeItem}[1]{
-  \item\small{#1 \vspace{-1pt}}
-}
-\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0in, label={}]}
-\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
-\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.18in, topsep=1pt, itemsep=1pt]}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{2pt}}
-
-\begin{document}
-
-\begin{center}
-  {\LARGE \textbf{Anil Kumar}} \\[2pt]
-  {\normalsize \textbf{Senior Software Engineer (Java | Spring Boot | Backend)}} \\[3pt]
-  \small \href{mailto:ak2697291@gmail.com}{ak2697291@gmail.com} $|$ +91-6266803923 $|$
-  \href{https://leetcode.com/u/ak2697291}{leetcode.com/u/ak2697291} $|$
-  \href{https://www.linkedin.com/in/anil-kumar-a26a57136}{linkedin.com/in/anil-kumar-a26a57136}
-\end{center}
-\vspace{-6pt}
-
-\section{Technical Skills}
-\begin{itemize}[leftmargin=0in, label={}, itemsep=1pt, topsep=1pt]
-  \item \small{\textbf{Languages \& Core:} Java (Java 8, Java 21, Multithreading, Streams API, Concurrency, JVM Tuning), C++, Python, SQL}
-  \item \small{\textbf{Frameworks:} Spring Ecosystem (Spring Boot 2/3, Spring Cloud, Spring Security, Spring Data), FastAPI, Hibernate/JPA}
-  \item \small{\textbf{Architecture \& Messaging:} Microservices, RESTful APIs, Event-Driven Architecture, Apache Kafka, RabbitMQ, Solace}
-  \item \small{\textbf{Databases \& Caching:} MongoDB (Change Streams, Aggregations), MySQL, Aerospike, Distributed Caching, Query Optimization}
-  \item \small{\textbf{DevOps, Observability \& Tools:} CI/CD (Jenkins), Grafana, Kibana, Elasticsearch, JUnit, Mockito, Git, Maven, Linux}
-\end{itemize}
-
-\section{Work Experience}
-\resumeSubHeadingListStart
-  \item
-  \resumeSubheading{Airtel}{Gurugram, India}{Senior Software Engineer}{July 2022 -- Present}
-  \resumeItemListStart
-    \resumeItem{\textbf{Spring Boot \& Java Modernization:} Spearheaded the migration of core microservices from Spring Boot 2 to 3 and Java 8 to 21, refactoring legacy dependencies to enhance system security, stability, and achieve a \textbf{40\% improvement in application performance}.}
-    \resumeItem{\textbf{High-Throughput Order Processing:} Re-engineered a mission-critical broadband order system using Java, Spring Boot, and MongoDB Change Streams, optimizing state transitions to \textbf{cut processing latency by 35\%} and \textbf{boost daily order throughput by 25\%}.}
-    \resumeItem{\textbf{Distributed Event-Driven Architecture:} Designed and scaled resilient asynchronous communication pipelines utilizing \textbf{Kafka, RabbitMQ, and Solace}, decoupling core services to handle \textbf{50K+ daily transactions} with 99.9\% fault tolerance.}
-    \resumeItem{\textbf{Reactive Microservices \& Caching:} Built low-latency backend services leveraging \textbf{Aerospike} for distributed caching and optimized complex \textbf{MySQL \& MongoDB} queries, reducing database CPU utilization and API response times by \textbf{30\%}.}
-    \resumeItem{\textbf{Resilience \& Production Excellence:} Implemented circuit breakers, rate limiters, and automated retry mechanisms alongside comprehensive \textbf{JUnit/Mockito} unit test suites (85\%+ code coverage), reducing production regressions by \textbf{30\%}.}
-    \resumeItem{\textbf{Observability \& Incident Automation:} Engineered real-time monitoring dashboards in \textbf{Grafana and Kibana} and built automated diagnostic workflows that \textbf{reduced Mean Time to Resolution (MTTR) by 90\%} during critical production incidents.}
-  \resumeItemListEnd
-\resumeSubHeadingListEnd
-
-\section{Education}
-\resumeSubHeadingListStart
-  \item
-  \resumeSubheading{National Institute of Technology (NIT), Bhopal}{Bhopal, India}{Bachelor of Technology in Computer Science and Engineering}{July 2018 -- May 2022}
-  \resumeItemListStart
-    \resumeItem{\textbf{CGPA:} 8.30 / 10.0 $|$ \textbf{Coursework:} Data Structures \& Algorithms, Operating Systems, DBMS, Computer Networks, OOP}
-  \resumeItemListEnd
-\resumeSubHeadingListEnd
-
-\section{Key Projects}
-\resumeSubHeadingListStart
-  \item
-  \resumeProjectHeading{High-Performance Order Management System}{Java, Spring Boot, Kafka, MongoDB, Aerospike, REST APIs}
-  \resumeItemListStart
-    \resumeItem{Architected a scalable microservices-based backend platform capable of handling real-time order lifecycle management, inventory locking, and asynchronous payment callbacks.}
-    \resumeItem{Integrated \textbf{Apache Kafka} for event sourcing and \textbf{Aerospike} as a high-speed read-through cache, achieving sub-50ms API response times under heavy concurrent load.}
-  \resumeItemListEnd
-  \item
-  \resumeProjectHeading{Android Vision Improvement System}{Java, Android SDK, Object-Oriented Design, Multithreading}
-  \resumeItemListStart
-    \resumeItem{Developed a mobile health application featuring real-time ocular exercise tracking, custom reminder scheduling, and interactive visual acuity testing modules using clean MVC architecture.}
-  \resumeItemListEnd
-\resumeSubHeadingListEnd
-
-\section{Achievements \& Awards}
-\resumeItemListStart
-  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for exceptional ownership in delivering zero-downtime Java/Spring Boot migrations and high-scale backend systems.}
-  \resumeItem{\textbf{Spirit of Collaboration Award:} Honored for cross-functional technical leadership across SRE, Product, and Platform engineering teams.}
-  \resumeItem{\textbf{Academic Excellence:} Secured \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% among 1.2M+ candidates) \& awarded the prestigious \textbf{Reliance Foundation Scholarship}.}
-\resumeItemListEnd
-
-\end{document}`
-  },
-  {
-    id: "RES-GENAI",
-    name: "Resume B — GenAI / Agentic AI & Backend Engineer (Airtel)",
-    track_type: "GenAI / Agentic AI Engineer",
-    is_default: false,
-    latex_code: String.raw`\documentclass[a4paper,10pt]{article}
-\usepackage[left=0.45in,top=0.4in,right=0.45in,bottom=0.4in]{geometry}
-\usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\usepackage{titlesec}
-\usepackage{xcolor}
-\usepackage{everypage}
-\AddEverypageHook{\ifnum\value{page}>1 \errmessage{Resume exceeds 1 page}\fi}
-
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
-\titlespacing{\section}{0pt}{6pt}{4pt}
-
-\newcommand{\resumeSubheading}[4]{
-  \noindent\textbf{#1} \hfill \textbf{#2} \\
-  \textit{#3} \hfill \textit{#4} \vspace{2pt}
-}
-\newcommand{\resumeProjectHeading}[2]{
-  \noindent\textbf{#1} \hfill \textit{#2} \vspace{2pt}
-}
-\newcommand{\resumeItem}[1]{
-  \item\small{#1 \vspace{-1pt}}
-}
-\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0in, label={}]}
-\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
-\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.18in, topsep=1pt, itemsep=1pt]}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{2pt}}
-
-\begin{document}
-
-\begin{center}
-  {\LARGE \textbf{Anil Kumar}} \\[2pt]
-  {\normalsize \textbf{Senior Software Engineer $|$ GenAI Engineer}} \\[3pt]
-  \small \href{mailto:ak2697291@gmail.com}{ak2697291@gmail.com} $|$ +91-6266803923 $|$
-  \href{https://leetcode.com/u/ak2697291}{leetcode.com/u/ak2697291} $|$
-  \href{https://www.linkedin.com/in/anil-kumar-a26a57136}{linkedin.com/in/anil-kumar-a26a57136}
-\end{center}
-\vspace{-6pt}
-
-\section{Technical Skills}
-\begin{itemize}[leftmargin=0in, label={}, itemsep=1pt, topsep=1pt]
-  \item \small{\textbf{Generative AI \& Agentic Systems:} Large Language Models (LLMs -- GPT-4, Claude, Gemini), Agentic AI Frameworks, Prompt Engineering, Retrieval-Augmented Generation (RAG), AI Agent Orchestration, Context Management, Tool Calling}
-  \item \small{\textbf{Languages \& Backend Frameworks:} Python, Java (Java 8, Java 21), CrewAI, FastAPI, Spring Boot (2/3), RESTful APIs, Microservices Architecture}
-  \item \small{\textbf{Messaging \& Event-Driven:} RabbitMQ, Apache Kafka, Solace, Event-Driven Systems, Asynchronous Processing}
-  \item \small{\textbf{Databases, Vector Stores \& DevOps:} MongoDB, MySQL, VectorDB, FAISS, Aerospike, Kibana, Grafana, Jenkins (CI/CD), Git}
-\end{itemize}
-
-\section{Work Experience}
-\resumeSubHeadingListStart
-  \item
-  \resumeSubheading{Airtel}{Gurugram, India}{Senior Software Engineer}{July 2022 -- Present}
-  \resumeItemListStart
-    \resumeItem{\textbf{Production Agentic AI System for SRE Operations:} Architected and deployed an end-to-end \textbf{Autonomous Agentic AI Platform} from scratch using \textbf{Python, CrewAI, and FastAPI} that autonomously triages production alerts, cutting root-cause analysis (RCA) time by \textbf{90\%} (from 45+ mins to under 5 mins).}
-    \resumeItem{\textbf{Multi-Agent AI Architecture \& Tool Integration:} Engineered specialized AI agents (\textbf{Log Analyzer, Metric Correlator, and RCA Synthesizer}) powered by \textbf{GPT-4 \& Claude}, integrating directly with \textbf{Kibana, Grafana, and internal microservices} via structured tool-calling and \textbf{RabbitMQ} event queues.}
-    \resumeItem{\textbf{RAG Pipeline \& Vector Knowledge Base:} Built a domain-specific \textbf{Retrieval-Augmented Generation (RAG)} pipeline utilizing \textbf{FAISS and VectorDB} over historical incident post-mortems, runbooks, and architecture docs, improving automated diagnostic accuracy by \textbf{45\%}.}
-    \resumeItem{\textbf{High-Scale Backend \& Microservices Modernization:} Led the migration of core backend services from \textbf{Spring Boot 2 to 3 and Java 8 to 21}, optimizing high-concurrency workflows and achieving a \textbf{40\% boost in system performance}.}
-    \resumeItem{\textbf{Event-Driven Order Orchestration:} Re-architected a broadband order management pipeline using \textbf{Spring Boot, Kafka, and MongoDB Change Streams}, reducing end-to-end order processing latency by \textbf{35\%} and increasing daily throughput by \textbf{25\%}.}
-    \resumeItem{\textbf{Cross-Functional AI Adoption \& Guardrails:} Partnered with platform and SRE leaders to establish prompt engineering best practices, deterministic LLM guardrails, and token-cost optimization strategies across engineering teams.}
-  \resumeItemListEnd
-\resumeSubHeadingListEnd
-
-\section{Education}
-\resumeSubHeadingListStart
-  \item
-  \resumeSubheading{National Institute of Technology (NIT), Bhopal}{Bhopal, India}{Bachelor of Technology in Computer Science and Engineering}{July 2018 -- May 2022}
-  \resumeItemListStart
-    \resumeItem{\textbf{CGPA:} 8.30 / 10.0 $|$ \textbf{Coursework:} Data Structures \& Algorithms, Artificial Intelligence, Operating Systems, DBMS, Computer Networks}
-  \resumeItemListEnd
-\resumeSubHeadingListEnd
-
-\section{Key Projects}
-\resumeSubHeadingListStart
-  \item
-  \resumeProjectHeading{Autonomous SRE Agent for Incident Management}{Python, CrewAI, FastAPI, LLMs, RAG, FAISS, VectorDB, RabbitMQ, Kibana}
-  \resumeItemListStart
-    \resumeItem{Designed a collaborative multi-agent workflow capable of ingesting real-time alert payloads from \textbf{RabbitMQ}, querying distributed logs in \textbf{Kibana}, and retrieving relevant runbooks via \textbf{FAISS} semantic search.}
-    \resumeItem{Implemented deterministic guardrails, structured JSON outputs, and human-in-the-loop webhook notifications for automated remediation recommendations.}
-  \resumeItemListEnd
-  \item
-  \resumeProjectHeading{Android Vision Improvement System}{Java, Android SDK, Mobile Application Development}
-  \resumeItemListStart
-    \resumeItem{Built an interactive mobile application offering guided eye-care exercises, automated screen-break scheduling, and visual acuity tracking.}
-  \resumeItemListEnd
-\resumeSubHeadingListEnd
-
-\section{Achievements \& Awards}
-\resumeItemListStart
-  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for pioneering production Agentic AI automation and delivering high-impact backend architectures at Airtel.}
-  \resumeItem{\textbf{Spirit of Collaboration Award:} Awarded for driving cross-team engineering synergy and operational excellence.}
-  \resumeItem{\textbf{Academic Distinction:} Achieved \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% nationwide) and recipient of the \textbf{Reliance Foundation Scholarship}.}
-\resumeItemListEnd
-
-\end{document}`
-  },
-  {
-    id: "RES-DIST-SRE",
-    name: "Resume C — Distributed Systems, Cloud & SRE Platform",
-    track_type: "Distributed Systems / Cloud SRE",
-    is_default: false,
-    latex_code: String.raw`\documentclass[letterpaper,11pt]{article}
-\usepackage[empty]{fullpage}
-\usepackage{titlesec}
-\usepackage[usenames,dvipsnames]{color}
-\usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr}
-\usepackage[english]{babel}
-\usepackage{tabularx}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
-
-\addtolength{\oddsidemargin}{-0.5in}
-\addtolength{\evensidemargin}{-0.5in}
-\addtolength{\textwidth}{1in}
-\addtolength{\topmargin}{-.5in}
-\addtolength{\textheight}{1.0in}
-
-\urlstyle{same}
-\raggedbottom
-\raggedright
-\setlength{\tabcolsep}{0in}
-
-\titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large
-}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
-
-\newcommand{\resumeItem}[1]{\item\small{{#1 \vspace{-2pt}}}}
-\newcommand{\resumeSubheading}[4]{
-  \vspace{-2pt}\item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{#1} & #2 \\
-      \textit{\small#3} & \textit{\small #4} \\
-    \end{tabular*}\vspace{-7pt}
-}
-\newcommand{\resumeProjectHeading}[2]{
-    \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \small\textbf{#1} & \textit{\small #2} \\
-    \end{tabular*}\vspace{-7pt}
-}
-\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
-\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
-\newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
-
-\begin{document}
-
-\begin{center}
-    \textbf{\Huge \scshape Anil Kumar} \\ \vspace{2pt}
-    \small Senior Distributed Systems, Cloud Infrastructure \& SRE Platform Engineer \\ \vspace{2pt}
-    \small +91-8989845501 $|$ \href{mailto:anilkumarmzp1@gmail.com}{\underline{anilkumarmzp1@gmail.com}} $|$
-    \href{https://linkedin.com/in/anil-kumar}{\underline{linkedin.com/in/anil-kumar}} $|$
-    \href{https://github.com/anilkumar}{\underline{github.com/anilkumar}}
-\end{center}
-
-\section{Summary}
-\small{Senior Distributed Systems \& SRE Platform Engineer with \textbf{4+ years of experience} at \textbf{Airtel} architecting mission-critical, fault-tolerant infrastructure and event-driven platforms serving \textbf{350M+ subscribers}. Proven track record in \textbf{Docker, Kubernetes, Kafka, RabbitMQ, Solace, Aerospike, Kibana observability, and autonomous incident RCA automation} (cutting MTTR by \textbf{90\%} and runtime resource consumption by \textbf{25\%}). B.Tech in Computer Science \& Engineering from \textbf{NIT Bhopal}.}
-
-\section{Technical Skills}
-\begin{itemize}[leftmargin=0.15in, label={}]
-    \small{\item{
-     \textbf{Cloud, SRE \& Observability}{: Docker, Kubernetes, Linux, Jenkins CI/CD, Git, Kibana, Distributed Tracing, Log Aggregation, Automated RCA, SLA/SLO Governance} \\
-     \textbf{Distributed Messaging \& Streaming}{: Apache Kafka, RabbitMQ, Solace PubSub+, MongoDB Change Streams, Event-Driven Architecture, High-Availability Systems} \\
-     \textbf{Languages \& High-Throughput Data}{: Java (8, 21), Python, SQL, Bash, Aerospike, Redis, MySQL, PostgreSQL, MongoDB, FAISS}
-    }}
-\end{itemize}
-
-\section{Work Experience}
-\resumeSubHeadingListStart
-
-  \resumeSubheading
-    {Senior Software Engineer (Distributed Systems \& SRE Platform)}{July 2023 -- Present}
-    {Airtel (Bharti Airtel Ltd.)}{Gurgaon, India}
-    \resumeItemListStart
-      \resumeItem{Architected and operated an \textbf{Autonomous Multi-Agent SRE \& Incident Management Platform} integrating \textbf{Kibana, RabbitMQ, FAISS, and Python/FastAPI}, reducing production Root Cause Analysis (RCA) and Mean Time To Resolution (MTTR) by \textbf{90\%}.}
-      \resumeItem{Engineered high-availability, real-time event streaming pipelines using \textbf{MongoDB Change Streams, Apache Kafka, and Solace}, eliminating polling bottlenecks and cutting end-to-end processing latency by \textbf{35\%}.}
-      \resumeItem{Spearheaded runtime modernization to \textbf{Java 21 and Spring Boot 3} across containerized microservices, achieving a \textbf{40\% throughput increase} and \textbf{25\% reduction in memory/compute footprint}.}
-      \resumeItem{Tuned distributed caching tiers with \textbf{Aerospike and MySQL}, improving tail-latency SLA compliance and boosting read throughput by \textbf{30\%} under peak telecom traffic.}
-    \resumeItemListEnd
-
-  \resumeSubheading
-    {Software Engineer (Platform \& Reliability Engineering)}{July 2022 -- June 2023}
-    {Airtel (Bharti Airtel Ltd.)}{Gurgaon, India}
-    \resumeItemListStart
-      \resumeItem{Built automated self-serve provisioning and CI/CD validation workflows using \textbf{Jenkins, Docker, and Linux}, reducing manual ops intervention by \textbf{70\%} and accelerating release velocity by \textbf{60\%}.}
-      \resumeItem{Implemented resilient asynchronous messaging patterns (dead-letter queues, idempotent retries, circuit breakers) across \textbf{Kafka and RabbitMQ} clusters.}
-    \resumeItemListEnd
-
-\resumeSubHeadingListEnd
-
-\section{Education}
-\resumeSubHeadingListStart
-  \resumeSubheading
-    {Maulana Azad National Institute of Technology (NIT), Bhopal}{2018 -- 2022}
-    {Bachelor of Technology in Computer Science and Engineering}{CGPA: 8.30 / 10.0}
-\resumeSubHeadingListEnd
-
-\section{Achievements \& Awards}
-\resumeItemListStart
-  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for 99.99\% platform reliability, SRE incident automation, and cloud cost optimization.}
-  \resumeItem{\textbf{Academic Distinction:} Achieved \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% nationwide) and recipient of the \textbf{Reliance Foundation Scholarship}.}
-\resumeItemListEnd
-
-\end{document}`
-  },
-  {
-    id: "RES-FULLSTACK",
-    name: "Resume D — Senior Full-Stack Engineer (React + Java/Python)",
-    track_type: "Full-Stack (React + Java/Python)",
-    is_default: false,
-    latex_code: String.raw`\documentclass[letterpaper,11pt]{article}
-\usepackage[empty]{fullpage}
-\usepackage{titlesec}
-\usepackage[usenames,dvipsnames]{color}
-\usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr}
-\usepackage[english]{babel}
-\usepackage{tabularx}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
-
-\addtolength{\oddsidemargin}{-0.5in}
-\addtolength{\evensidemargin}{-0.5in}
-\addtolength{\textwidth}{1in}
-\addtolength{\topmargin}{-.5in}
-\addtolength{\textheight}{1.0in}
-
-\urlstyle{same}
-\raggedbottom
-\raggedright
-\setlength{\tabcolsep}{0in}
-
-\titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large
-}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
-
-\newcommand{\resumeItem}[1]{\item\small{{#1 \vspace{-2pt}}}}
-\newcommand{\resumeSubheading}[4]{
-  \vspace{-2pt}\item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{#1} & #2 \\
-      \textit{\small#3} & \textit{\small #4} \\
-    \end{tabular*}\vspace{-7pt}
-}
-\newcommand{\resumeProjectHeading}[2]{
-    \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \small\textbf{#1} & \textit{\small #2} \\
-    \end{tabular*}\vspace{-7pt}
-}
-\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
-\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
-\newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
-
-\begin{document}
-
-\begin{center}
-    \textbf{\Huge \scshape Anil Kumar} \\ \vspace{2pt}
-    \small Senior Full-Stack Software Engineer (React.js, TypeScript/JS, Java 21, Spring Boot 3, FastAPI) \\ \vspace{2pt}
-    \small +91-8989845501 $|$ \href{mailto:anilkumarmzp1@gmail.com}{\underline{anilkumarmzp1@gmail.com}} $|$
-    \href{https://linkedin.com/in/anil-kumar}{\underline{linkedin.com/in/anil-kumar}} $|$
-    \href{https://github.com/anilkumar}{\underline{github.com/anilkumar}}
-\end{center}
-
-\section{Summary}
-\small{Product-minded Senior Full-Stack Engineer with \textbf{4+ years of experience} at \textbf{Airtel} delivering end-to-end web platforms, self-serve enterprise portals, and AI-powered operational dashboards backed by high-throughput microservices (\textbf{350M+ user scale}). Skilled across \textbf{React.js, JavaScript/TypeScript, HTML5/CSS3, Java 21, Spring Boot 3, Python, FastAPI, Kafka, and PostgreSQL/MongoDB}. B.Tech in Computer Science \& Engineering from \textbf{NIT Bhopal}.}
-
-\section{Technical Skills}
-\begin{itemize}[leftmargin=0.15in, label={}]
-    \small{\item{
-     \textbf{Frontend \& Web UI}{: React.js, JavaScript (ES6+), TypeScript, HTML5, CSS3, Responsive Dashboards, REST/SSE Real-Time Streaming UI, State Management} \\
-     \textbf{Backend \& APIs}{: Java 21, Spring Boot 3, Python, FastAPI, RESTful APIs, GraphQL, Microservices, JWT/OAuth2 Security, Webhooks} \\
-     \textbf{Databases, Messaging \& Cloud}{: PostgreSQL, MySQL, MongoDB, Aerospike, Redis, Apache Kafka, RabbitMQ, Docker, Kubernetes, Jenkins CI/CD}
-    }}
-\end{itemize}
-
-\section{Work Experience}
-\resumeSubHeadingListStart
-
-  \resumeSubheading
-    {Senior Software Engineer (Full-Stack Product \& Platform Engineering)}{July 2023 -- Present}
-    {Airtel (Bharti Airtel Ltd.)}{Gurgaon, India}
-    \resumeItemListStart
-      \resumeItem{Designed and built an interactive \textbf{React.js + FastAPI + Spring Boot 3 Operations \& AI Incident Portal} enabling real-time telemetry visualization, one-click remediation workflows, and \textbf{90\% faster incident triage}.}
-      \resumeItem{Architected a \textbf{Full-Stack Self-Serve Partner \& Configuration Portal} (\textbf{React frontend + Spring Boot 3 REST APIs}), eliminating \textbf{70\% of manual engineering tickets} and accelerating partner onboarding by \textbf{60\%}.}
-      \resumeItem{Engineered real-time UI notification and data-sync pipelines powered by \textbf{MongoDB Change Streams, Kafka, and Aerospike}, reducing end-to-end data refresh latency by \textbf{35\%}.}
-      \resumeItem{Upgraded backend API services to \textbf{Java 21 and Spring Boot 3}, improving API response times by \textbf{40\%} across high-concurrency web and mobile client traffic.}
-    \resumeItemListEnd
-
-  \resumeSubheading
-    {Software Engineer (Full-Stack \& Backend Systems)}{July 2022 -- June 2023}
-    {Airtel (Bharti Airtel Ltd.)}{Gurgaon, India}
-    \resumeItemListStart
-      \resumeItem{Developed responsive internal web tools and scalable REST microservices in \textbf{React, Java, and Spring Boot} supporting billing, subscriber lifecycle, and telecom provisioning workflows.}
-      \resumeItem{Collaborated closely with product managers and UX designers to deliver accessible, high-performance web interfaces backed by \textbf{MySQL, MongoDB, and Redis}.}
-    \resumeItemListEnd
-
-\resumeSubHeadingListEnd
-
-\section{Education}
-\resumeSubHeadingListStart
-  \resumeSubheading
-    {Maulana Azad National Institute of Technology (NIT), Bhopal}{2018 -- 2022}
-    {Bachelor of Technology in Computer Science and Engineering}{CGPA: 8.30 / 10.0}
-\resumeSubHeadingListEnd
-
-\section{Achievements \& Awards}
-\resumeItemListStart
-  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for delivering high-impact full-stack portals, AI-assisted dashboards, and scalable backend services.}
-  \resumeItem{\textbf{Academic Distinction:} Achieved \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% nationwide) and recipient of the \textbf{Reliance Foundation Scholarship}.}
-\resumeItemListEnd
-
-\end{document}`
-  }
-];
-
+// Base LaTeX resumes are fetched exclusively from the Supabase `public.latex_resumes` table (no hardcoded JS resumes)
 const state = {
   supabaseUrl: DEFAULT_SUPABASE_URL,
   supabaseKey: DEFAULT_SUPABASE_KEY,
@@ -1080,7 +647,7 @@ const state = {
     rawPageText: "",
     jobDetails: null,
     gateResults: [],
-    selectedResumeId: "RES-JAVA",
+    selectedResumeId: "",
     tailoredTex: "",
     finalEvaluation: null,
     pdfBlob: null,
@@ -1254,30 +821,129 @@ function updateSupabaseStatusBadge(status, text) {
   }
 }
 
+function getCountryRemarksCache() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.countryRemarks) || "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function setCountryRemarkInCache(countryName, remarkText) {
+  const key = String(countryName || "").trim().toLowerCase();
+  if (!key) return;
+  try {
+    const map = getCountryRemarksCache();
+    map[key] = String(remarkText || "");
+    localStorage.setItem(STORAGE_KEYS.countryRemarks, JSON.stringify(map));
+  } catch {
+    // Ignore storage quota errors
+  }
+}
+
+function hydrateStrategiesWithRemarks(strategiesList) {
+  const remarksMap = getCountryRemarksCache();
+  let cacheUpdated = false;
+  const result = (Array.isArray(strategiesList) ? strategiesList : []).map((s) => {
+    const key = String(s.country || "").trim().toLowerCase();
+    const dbRemark = typeof s.user_remarks === "string" ? s.user_remarks : "";
+    let finalRemark = dbRemark;
+    if (dbRemark.trim() !== "") {
+      if (remarksMap[key] !== dbRemark) {
+        remarksMap[key] = dbRemark;
+        cacheUpdated = true;
+      }
+    } else if (key && Object.prototype.hasOwnProperty.call(remarksMap, key)) {
+      finalRemark = String(remarksMap[key] || "");
+    }
+    return {
+      ...s,
+      user_remarks: finalRemark
+    };
+  });
+  if (cacheUpdated) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.countryRemarks, JSON.stringify(remarksMap));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }
+  return result;
+}
+
 function saveLocalCache() {
   try {
     localStorage.setItem(STORAGE_KEYS.appsCache, JSON.stringify(state.applications));
     localStorage.setItem(STORAGE_KEYS.strategiesCache, JSON.stringify(state.strategies));
     localStorage.setItem(STORAGE_KEYS.checklistCache, JSON.stringify(state.checklist));
-    localStorage.setItem(STORAGE_KEYS.latexResumesCache, JSON.stringify(state.latexResumes));
     localStorage.setItem(STORAGE_KEYS.aiConfig, JSON.stringify(state.aiConfig));
   } catch {
     // Ignore storage quota errors
   }
 }
 
-function mergeStarterLatexResumes(list) {
-  if (!Array.isArray(list) || list.length === 0) {
-    return structuredClone(DEFAULT_LATEX_RESUMES);
-  }
-  const merged = structuredClone(list);
-  const existingIds = new Set(merged.map((r) => r.id));
-  for (const starter of DEFAULT_LATEX_RESUMES) {
-    if (!existingIds.has(starter.id)) {
-      merged.push(structuredClone(starter));
+function normalizeResumeRow(row) {
+  if (!row || typeof row !== "object") return null;
+  const id = String(row.id || row.ID || "").trim();
+  const latexCode = String(row.latex_code || row.latex_source || row.tex || row.content || "").trim();
+  if (!id || !latexCode) return null;
+  return {
+    id,
+    name: String(row.name || row.title || id).trim(),
+    track_type: String(row.track_type || row.resume_track || row.track || "Custom Engineering Track").trim(),
+    latex_code: latexCode,
+    is_default: Boolean(row.is_default)
+  };
+}
+
+/**
+ * Fetches base LaTeX resumes exclusively from the Supabase `public.latex_resumes` table.
+ * Never falls back to hardcoded resumes or localStorage.
+ */
+async function fetchResumesFromSupabase(showFeedbackToast = false) {
+  try {
+    const dbResumes = await sbSelect("latex_resumes", "select=*&order=created_at.asc");
+    state.latexResumes = Array.isArray(dbResumes)
+      ? dbResumes.map(normalizeResumeRow).filter(Boolean)
+      : [];
+
+    if (state.latexResumes.length > 0) {
+      const currentSelected = state.latexResumes.find((r) => r.id === state.tailor.selectedResumeId);
+      const activeResume = currentSelected || state.latexResumes.find((r) => r.is_default) || state.latexResumes[0];
+      state.tailor.selectedResumeId = activeResume.id;
+
+      const editorEl = document.getElementById("tailor-latex-editor");
+      if (editorEl && !editorEl.value.trim()) {
+        editorEl.value = activeResume.latex_code;
+      }
+      const badgeEl = document.getElementById("tailor-selected-resume-badge");
+      if (badgeEl && (!badgeEl.textContent || badgeEl.textContent === "RES-JAVA")) {
+        badgeEl.textContent = activeResume.name;
+      }
+    } else {
+      state.tailor.selectedResumeId = "";
     }
+
+    populateResumeTrackControls();
+    renderResumeShowcaseGrid();
+    renderLatexResumesManagerList();
+
+    if (showFeedbackToast) {
+      showToast(`Fetched ${state.latexResumes.length} base LaTeX resume(s) from Supabase!`);
+    }
+    return state.latexResumes;
+  } catch (err) {
+    console.warn("Supabase latex_resumes fetch error:", err.message);
+    state.latexResumes = [];
+    populateResumeTrackControls();
+    renderResumeShowcaseGrid();
+    renderLatexResumesManagerList();
+    if (showFeedbackToast) {
+      showToast(`Could not fetch resumes from Supabase: ${err.message}`);
+    }
+    return [];
   }
-  return merged;
 }
 
 function loadLocalCacheOrDefaults() {
@@ -1285,13 +951,15 @@ function loadLocalCacheOrDefaults() {
     const apps = JSON.parse(localStorage.getItem(STORAGE_KEYS.appsCache) || "null");
     const strats = JSON.parse(localStorage.getItem(STORAGE_KEYS.strategiesCache) || "null");
     const chk = JSON.parse(localStorage.getItem(STORAGE_KEYS.checklistCache) || "null");
-    const resumes = JSON.parse(localStorage.getItem(STORAGE_KEYS.latexResumesCache) || "null");
     const aiCfg = JSON.parse(localStorage.getItem(STORAGE_KEYS.aiConfig) || "null");
 
     state.applications = Array.isArray(apps) && apps.length > 0 ? apps : structuredClone(DEFAULT_APPLICATIONS);
-    state.strategies = Array.isArray(strats) && strats.length > 0 ? strats : structuredClone(DEFAULT_STRATEGIES);
+    state.strategies = hydrateStrategiesWithRemarks(
+      Array.isArray(strats) && strats.length > 0 ? strats : structuredClone(DEFAULT_STRATEGIES)
+    );
     state.checklist = Array.isArray(chk) && chk.length > 0 ? chk : structuredClone(DEFAULT_CHECKLIST);
-    state.latexResumes = mergeStarterLatexResumes(resumes);
+    // Resumes are never loaded from local cache or hardcoded defaults; only from Supabase
+    state.latexResumes = [];
     if (aiCfg && typeof aiCfg === "object") {
       state.aiConfig = {
         endpoint: aiCfg.endpoint || DEFAULT_AZURE_OPENAI_ENDPOINT,
@@ -1302,9 +970,9 @@ function loadLocalCacheOrDefaults() {
     }
   } catch {
     state.applications = structuredClone(DEFAULT_APPLICATIONS);
-    state.strategies = structuredClone(DEFAULT_STRATEGIES);
+    state.strategies = hydrateStrategiesWithRemarks(structuredClone(DEFAULT_STRATEGIES));
     state.checklist = structuredClone(DEFAULT_CHECKLIST);
-    state.latexResumes = structuredClone(DEFAULT_LATEX_RESUMES);
+    state.latexResumes = [];
   }
 }
 
@@ -1317,20 +985,8 @@ async function fetchAllFromSupabase(showFeedbackToast = false) {
       sbSelect("resume_checklist", "select=*&order=sort_order.asc,id.asc")
     ]);
 
-    // Also try fetching latex_resumes if the table exists
-    try {
-      const dbResumes = await sbSelect("latex_resumes", "select=*&order=created_at.asc");
-      if (Array.isArray(dbResumes) && dbResumes.length > 0) {
-        state.latexResumes = mergeStarterLatexResumes(dbResumes);
-        if (state.latexResumes.length > dbResumes.length) {
-          await sbUpsert("latex_resumes", state.latexResumes, "id").catch(() => {});
-        }
-      } else if (state.latexResumes.length > 0) {
-        await sbUpsert("latex_resumes", state.latexResumes, "id").catch(() => {});
-      }
-    } catch {
-      // Optional table if user hasn't run latest update_sql_schema.sql yet
-    }
+    // Fetch latex_resumes exclusively from Supabase
+    await fetchResumesFromSupabase(false);
 
     state.dbConnected = true;
     state.lastSyncError = null;
@@ -1342,23 +998,29 @@ async function fetchAllFromSupabase(showFeedbackToast = false) {
     }
 
     state.applications = apps.map(normalizeAppRow);
-    state.strategies = strats.length > 0 ? strats : structuredClone(DEFAULT_STRATEGIES);
+    state.strategies = hydrateStrategiesWithRemarks(
+      strats.length > 0 ? strats : structuredClone(DEFAULT_STRATEGIES)
+    );
     state.checklist = chk.length > 0 ? chk : structuredClone(DEFAULT_CHECKLIST);
 
     saveLocalCache();
     updateSupabaseStatusBadge(
       "connected",
-      `Supabase Live (${state.applications.length} apps · ${state.strategies.length} hubs)`
+      `Supabase Live (${state.applications.length} apps · ${state.latexResumes.length} resumes)`
     );
     renderAll();
     if (showFeedbackToast) {
-      showToast(`Synced ${state.applications.length} applications & ${state.strategies.length} country playbooks from Supabase!`);
+      showToast(
+        `Synced ${state.applications.length} applications, ${state.latexResumes.length} resumes & ${state.strategies.length} country playbooks from Supabase!`
+      );
     }
   } catch (err) {
     state.dbConnected = false;
     state.lastSyncError = err;
     console.warn("Supabase fetch notice:", err.message);
     loadLocalCacheOrDefaults();
+    // Still attempt to fetch resumes directly from Supabase in case only another table failed
+    await fetchResumesFromSupabase(false);
 
     const isMissingTable =
       String(err.code) === "42P01" ||
@@ -1382,7 +1044,6 @@ async function seedDefaultDataToSupabase(notifyUser = true) {
     updateSupabaseStatusBadge("warning", "Seeding Supabase tables...");
     await sbUpsert("country_strategies", DEFAULT_STRATEGIES, "country");
     await sbUpsert("resume_checklist", DEFAULT_CHECKLIST, "id");
-    await sbUpsert("latex_resumes", state.latexResumes.length ? state.latexResumes : DEFAULT_LATEX_RESUMES, "id").catch(() => {});
     if (state.applications.length === 0) {
       await sbUpsert("job_applications", DEFAULT_APPLICATIONS, "id");
     } else {
@@ -1410,6 +1071,9 @@ function subscribeRealtime() {
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "resume_checklist" }, () => {
         fetchAllFromSupabase(false);
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "latex_resumes" }, () => {
+        fetchResumesFromSupabase(false);
       })
       .subscribe();
   } catch {
@@ -1705,6 +1369,33 @@ function renderActiveCountryBanner() {
         <strong>${escapeHtml(tip)}</strong>
       </div>
     </div>
+    <div class="strategy-remarks-box" style="margin-top: 0.75rem;">
+      <div class="strategy-remarks-head">
+        <label class="strategy-remarks-label" for="banner-remark-box-${escapeHtml(meta.iso_code || country.replace(/\s+/g, "-"))}">
+          📝 My Remarks for ${escapeHtml(country)}
+        </label>
+        <div class="strategy-remarks-controls">
+          <span class="strategy-remarks-status ${strat?.user_remarks ? "is-saved" : ""}" data-remark-status="${escapeHtml(country)}">
+            ${strat?.user_remarks ? "✓ Saved" : "Auto-saves on blur"}
+          </span>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-save-country-remark="${escapeHtml(country)}"
+            title="Save your personal remarks for ${escapeHtml(country)}"
+          >
+            💾 Save Remark
+          </button>
+        </div>
+      </div>
+      <textarea
+        id="banner-remark-box-${escapeHtml(meta.iso_code || country.replace(/\s+/g, "-"))}"
+        class="country-remarks-input"
+        data-country-remarks-input="${escapeHtml(country)}"
+        rows="2"
+        placeholder="Add your personal remarks, contacts, visa notes, or target salary expectations for ${escapeHtml(country)}..."
+      >${escapeHtml(strat?.user_remarks || getCountryRemarksCache()[country.toLowerCase()] || "")}</textarea>
+    </div>
   `;
 }
 
@@ -1866,14 +1557,18 @@ function populateResumeTrackControls() {
   const headerChips = document.getElementById("header-track-chips");
   if (headerChips) {
     const resumes = state.latexResumes || [];
-    const chipHtml = resumes.slice(0, 5).map((r) => {
-      const badge = getResumeTrackBadge(r.track_type);
-      return `<span class="track-chip ${badge.badgeClass === "badge-genai" ? "track-genai" : "track-java"}" title="${escapeHtml(r.name)} (${escapeHtml(r.track_type)})">${escapeHtml(badge.shortLabel)}</span>`;
-    });
-    if (resumes.length > 5) {
-      chipHtml.push(`<span class="track-chip track-genai">+${resumes.length - 5} More</span>`);
+    if (resumes.length === 0) {
+      headerChips.innerHTML = `<span class="track-chip" title="Fetched from Supabase public.latex_resumes">Supabase Resumes (0)</span>`;
+    } else {
+      const chipHtml = resumes.slice(0, 5).map((r) => {
+        const badge = getResumeTrackBadge(r.track_type);
+        return `<span class="track-chip ${badge.badgeClass === "badge-genai" ? "track-genai" : "track-java"}" title="${escapeHtml(r.name)} (${escapeHtml(r.track_type)})">${escapeHtml(badge.shortLabel)}</span>`;
+      });
+      if (resumes.length > 5) {
+        chipHtml.push(`<span class="track-chip track-genai">+${resumes.length - 5} More</span>`);
+      }
+      headerChips.innerHTML = chipHtml.join("");
     }
-    headerChips.innerHTML = chipHtml.join("");
   }
 }
 
@@ -1881,9 +1576,36 @@ function renderResumeShowcaseGrid() {
   const grid = document.getElementById("resume-tracks-showcase-grid");
   const countBadge = document.getElementById("showcase-resume-count");
   if (countBadge) {
-    countBadge.textContent = `${state.latexResumes.length} Active Base Resumes`;
+    countBadge.textContent = String(state.latexResumes.length);
+  }
+  const savedBadge = document.getElementById("saved-resumes-count-badge");
+  if (savedBadge) {
+    savedBadge.textContent = String(state.latexResumes.length);
   }
   if (!grid) return;
+
+  if (!state.latexResumes || state.latexResumes.length === 0) {
+    grid.innerHTML = `
+      <article class="resume-showcase-card" style="grid-column: 1 / -1;">
+        <div class="resume-card-header">
+          <span class="badge badge-custom">🗄️ Supabase Database (public.latex_resumes)</span>
+        </div>
+        <h4>No Base LaTeX Resumes Found in Supabase</h4>
+        <p class="cell-sub" style="margin-bottom:0.75rem;">
+          Hardcoded resumes have been removed. All base LaTeX resumes are fetched directly from the <code>public.latex_resumes</code> table in your Supabase database. Run <code>update_sql_schema.sql</code> in the Supabase SQL Editor or add a new resume variant below.
+        </p>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary btn-sm" data-open-resume-manager="true">
+            ➕ Add Resume to Supabase
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" data-sync-supabase-resumes="true">
+            🔄 Sync Resumes from Supabase
+          </button>
+        </div>
+      </article>
+    `;
+    return;
+  }
 
   grid.innerHTML = (state.latexResumes || [])
     .map((r) => {
@@ -1926,7 +1648,7 @@ function renderResumeShowcaseGrid() {
             <button type="button" class="btn btn-secondary btn-sm" data-showcase-edit-tex="${escapeHtml(r.id)}">
               ✏️ Edit .tex
             </button>
-            <button type="button" class="btn btn-ghost btn-sm" data-Duplicate-latex-id="${escapeHtml(r.id)}" title="Clone this resume into a new track variant">
+            <button type="button" class="btn btn-ghost btn-sm" data-duplicate-latex-id="${escapeHtml(r.id)}" title="Clone this resume into a new track variant">
               📋 Clone Variant
             </button>
           </div>
@@ -2219,7 +1941,8 @@ function renderStrategyCards() {
       s.tax_relocation_perk,
       s.top_job_portals,
       s.tier_1_sponsor_companies,
-      s.application_tip
+      s.application_tip,
+      s.user_remarks || ""
     ]
       .join(" ")
       .toLowerCase();
@@ -2243,6 +1966,8 @@ function renderStrategyCards() {
       const appCount = state.applications.filter(
         (a) => a.country.toLowerCase() === s.country.toLowerCase()
       ).length;
+      const slug = String(s.iso_code || s.country || "country").replace(/[^a-zA-Z0-9_-]/g, "-");
+      const currentRemark = s.user_remarks || "";
       return `
         <article class="strategy-card">
           <div class="strategy-card-header">
@@ -2273,6 +1998,33 @@ function renderStrategyCards() {
             <div class="strategy-row">
               <strong>Insider Application Strategy</strong>
               <p>${escapeHtml(s.application_tip)}</p>
+            </div>
+            <div class="strategy-remarks-box">
+              <div class="strategy-remarks-head">
+                <label class="strategy-remarks-label" for="remark-box-${escapeHtml(slug)}">
+                  📝 My Remarks for ${escapeHtml(s.country)}
+                </label>
+                <div class="strategy-remarks-controls">
+                  <span class="strategy-remarks-status ${currentRemark ? "is-saved" : ""}" data-remark-status="${escapeHtml(s.country)}">
+                    ${currentRemark ? "✓ Saved" : "Auto-saves on blur"}
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    data-save-country-remark="${escapeHtml(s.country)}"
+                    title="Save your personal remarks for ${escapeHtml(s.country)}"
+                  >
+                    💾 Save Remark
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id="remark-box-${escapeHtml(slug)}"
+                class="country-remarks-input"
+                data-country-remarks-input="${escapeHtml(s.country)}"
+                rows="2"
+                placeholder="Add your personal remarks, contacts, visa notes, or target salary expectations for ${escapeHtml(s.country)}..."
+              >${escapeHtml(currentRemark)}</textarea>
             </div>
             <div class="strategy-card-actions">
               <button type="button" class="btn btn-primary btn-sm" data-quick-add-country="${escapeHtml(s.country)}">
@@ -2838,6 +2590,7 @@ function openCountryPlaybookModal(countryName = "") {
     (s) => s.country.toLowerCase() === String(countryName || "").toLowerCase()
   );
   const meta = resolveCountryMeta(countryName || "Austria");
+  const cachedRemark = countryName ? getCountryRemarksCache()[String(countryName).trim().toLowerCase()] || "" : "";
 
   if (existing) {
     setElVal(["cp-country"], existing.country);
@@ -2851,14 +2604,97 @@ function openCountryPlaybookModal(countryName = "") {
     setElVal(["cp-portals"], existing.top_job_portals);
     setElVal(["cp-companies"], existing.tier_1_sponsor_companies);
     setElVal(["cp-tip", "cp-pitch"], existing.application_tip);
+    setElVal(["cp-remarks"], existing.user_remarks || cachedRemark || "");
   } else if (countryName) {
     setElVal(["cp-country"], meta.country);
     setElVal(["cp-region"], meta.region);
     setElVal(["cp-flag"], meta.flag);
     setElVal(["cp-visa"], meta.visa);
+    setElVal(["cp-remarks"], cachedRemark);
   }
 
   dialog.showModal();
+}
+
+async function upsertCountryStrategyWithFallback(row) {
+  try {
+    await sbUpsert("country_strategies", row, "country");
+    return { syncedFullRow: true };
+  } catch (err) {
+    const msg = String(err?.message || "");
+    if (/user_remarks/i.test(msg)) {
+      const { user_remarks: _ignored, ...rowWithoutRemarks } = row;
+      await sbUpsert("country_strategies", rowWithoutRemarks, "country");
+      return { syncedFullRow: false };
+    }
+    throw err;
+  }
+}
+
+async function saveCountryRemark(countryName, remarkText, showFeedbackToast = true) {
+  const cleanCountry = String(countryName || "").trim();
+  if (!cleanCountry) return;
+  const cleanRemark = String(remarkText || "").trim();
+
+  setCountryRemarkInCache(cleanCountry, cleanRemark);
+
+  let strat = state.strategies.find((s) => s.country.toLowerCase() === cleanCountry.toLowerCase());
+  if (!strat) {
+    const meta = resolveCountryMeta(cleanCountry);
+    strat = {
+      country: meta.country || cleanCountry,
+      iso_code: meta.iso_code,
+      flag: meta.flag,
+      region: meta.region,
+      tier: "Tier 1 — High ROI",
+      primary_visa_route: meta.visa,
+      min_salary_threshold: `Market Competitive (${meta.currency})`,
+      tax_relocation_perk: "Eligible for international skilled worker relocation",
+      best_resume_track: "All Tracks (Java / GenAI / SRE / Full-Stack)",
+      top_job_portals: "LinkedIn, Relocate.me, Company Career Portals",
+      tier_1_sponsor_companies: "Global Tech MNCs & High-Growth Startups",
+      application_tip: "Highlight Airtel 350M+ scale & NIT Bhopal degree.",
+      user_remarks: cleanRemark
+    };
+    state.strategies.push(strat);
+  } else {
+    strat.user_remarks = cleanRemark;
+  }
+
+  saveLocalCache();
+
+  // Keep any matching textareas and status badges in sync without losing cursor focus
+  document.querySelectorAll("[data-country-remarks-input]").forEach((el) => {
+    if (
+      String(el.dataset.countryRemarksInput || "").toLowerCase() === cleanCountry.toLowerCase() &&
+      document.activeElement !== el
+    ) {
+      el.value = cleanRemark;
+    }
+  });
+
+  document.querySelectorAll("[data-remark-status]").forEach((badge) => {
+    if (String(badge.dataset.remarkStatus || "").toLowerCase() === cleanCountry.toLowerCase()) {
+      badge.textContent = cleanRemark ? "✓ Saved" : "Cleared";
+      badge.classList.remove("is-dirty");
+      badge.classList.add("is-saved");
+    }
+  });
+
+  try {
+    await upsertCountryStrategyWithFallback(strat);
+    if (showFeedbackToast) {
+      showToast(
+        cleanRemark
+          ? `Saved your personal remarks for ${strat.flag || "🌍"} ${strat.country}!`
+          : `Cleared personal remarks for ${strat.flag || "🌍"} ${strat.country}.`
+      );
+    }
+  } catch (err) {
+    if (showFeedbackToast) {
+      showToast(`Saved remarks for ${strat.country} locally (Supabase sync notice: ${err.message})`);
+    }
+  }
 }
 
 async function handleSaveCountryPlaybook(e) {
@@ -2868,6 +2704,12 @@ async function handleSaveCountryPlaybook(e) {
   if (!country || !visa) return;
 
   const meta = resolveCountryMeta(country);
+  const existing = state.strategies.find((s) => s.country.toLowerCase() === country.toLowerCase());
+  const remarksInputEl = document.getElementById("cp-remarks");
+  const userRemarks = remarksInputEl ? remarksInputEl.value.trim() : existing?.user_remarks || "";
+
+  setCountryRemarkInCache(country, userRemarks);
+
   const row = {
     country,
     iso_code: meta.iso_code,
@@ -2880,7 +2722,8 @@ async function handleSaveCountryPlaybook(e) {
     best_resume_track: getElVal(["cp-track", "cp-timeline"]).trim() || "All Tracks (Java / GenAI / SRE / Full-Stack)",
     top_job_portals: getElVal(["cp-portals"]).trim() || "LinkedIn, Relocate.me",
     tier_1_sponsor_companies: getElVal(["cp-companies"]).trim() || "Top Tech Employers",
-    application_tip: getElVal(["cp-tip", "cp-pitch"]).trim() || "Highlight Airtel 350M+ scale & NIT Bhopal degree."
+    application_tip: getElVal(["cp-tip", "cp-pitch"]).trim() || "Highlight Airtel 350M+ scale & NIT Bhopal degree.",
+    user_remarks: userRemarks
   };
 
   const idx = state.strategies.findIndex((s) => s.country.toLowerCase() === country.toLowerCase());
@@ -2894,8 +2737,8 @@ async function handleSaveCountryPlaybook(e) {
   renderAll();
 
   try {
-    await sbUpsert("country_strategies", row, "country");
-    showToast(`Saved ${row.flag} ${row.country} playbook to Supabase!`);
+    await upsertCountryStrategyWithFallback(row);
+    showToast(`Saved ${row.flag} ${row.country} playbook & remarks to Supabase!`);
   } catch (err) {
     showToast(`Saved ${row.country} playbook locally — Supabase error: ${err.message}`);
   }
@@ -3184,16 +3027,32 @@ function bindEvents() {
       return;
     }
 
+    const syncResumesBtn = e.target.closest("[data-sync-supabase-resumes]");
+    if (syncResumesBtn) {
+      fetchResumesFromSupabase(true);
+      return;
+    }
+
+    const openResumeMgrBtn = e.target.closest("[data-open-resume-manager]");
+    if (openResumeMgrBtn) {
+      openAiTailorSettingsModal();
+      return;
+    }
+
     const presetChip = e.target.closest(".preset-track-chip");
     if (presetChip) {
-      const trackVal = presetChip.dataset.presetTrack || "";
+      const trackVal = presetChip.dataset.presetTrack || presetChip.dataset.track || "";
       const trackInput = document.getElementById("lr-track");
       if (trackInput && trackVal) {
         trackInput.value = trackVal;
       }
+      const idInput = document.getElementById("lr-id");
+      if (idInput && !idInput.value.trim() && presetChip.dataset.id) {
+        idInput.value = presetChip.dataset.id;
+      }
       const nameInput = document.getElementById("lr-name");
-      if (nameInput && !nameInput.value.trim() && trackVal) {
-        nameInput.value = `Resume — ${trackVal}`;
+      if (nameInput && !nameInput.value.trim()) {
+        nameInput.value = presetChip.dataset.name || (trackVal ? `Resume — ${trackVal}` : "");
       }
       return;
     }
@@ -3226,6 +3085,17 @@ function bindEvents() {
     const editPlaybookBtn = e.target.closest("[data-edit-playbook]");
     if (editPlaybookBtn) {
       openCountryPlaybookModal(editPlaybookBtn.dataset.editPlaybook);
+      return;
+    }
+
+    const saveCountryRemarkBtn = e.target.closest("[data-save-country-remark]");
+    if (saveCountryRemarkBtn) {
+      const countryName = saveCountryRemarkBtn.dataset.saveCountryRemark;
+      const box = saveCountryRemarkBtn
+        .closest(".strategy-remarks-box")
+        ?.querySelector("[data-country-remarks-input]");
+      const remarkVal = box ? box.value : "";
+      saveCountryRemark(countryName, remarkVal, true);
       return;
     }
 
@@ -3263,6 +3133,38 @@ function bindEvents() {
     const select = e.target.closest("[data-inline-status-id]");
     if (!select) return;
     handleInlineStatusChange(select.dataset.inlineStatusId, select.value);
+  });
+
+  // Country playbook personal remarks live status & auto-save on blur/Cmd+Enter
+  document.addEventListener("input", (e) => {
+    const remarkInput = e.target.closest("[data-country-remarks-input]");
+    if (!remarkInput) return;
+    const countryName = remarkInput.dataset.countryRemarksInput;
+    const statusBadge = remarkInput
+      .closest(".strategy-remarks-box")
+      ?.querySelector("[data-remark-status]");
+    if (statusBadge) {
+      statusBadge.textContent = "Unsaved changes...";
+      statusBadge.classList.remove("is-saved");
+      statusBadge.classList.add("is-dirty");
+    }
+    // Keep cache updated as the user types so nothing is ever lost
+    setCountryRemarkInCache(countryName, remarkInput.value);
+  });
+
+  document.addEventListener("change", (e) => {
+    const remarkInput = e.target.closest("[data-country-remarks-input]");
+    if (!remarkInput) return;
+    saveCountryRemark(remarkInput.dataset.countryRemarksInput, remarkInput.value, true);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    const remarkInput = e.target.closest("[data-country-remarks-input]");
+    if (!remarkInput) return;
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      saveCountryRemark(remarkInput.dataset.countryRemarksInput, remarkInput.value, true);
+    }
   });
 
   // Checklist checkbox toggle
@@ -3658,6 +3560,11 @@ function updateTailorStatusBadge(text) {
 async function callAzureOpenAI(messages, maxTokens = 4096, jsonMode = false) {
   const endpoint = (state.aiConfig.endpoint || DEFAULT_AZURE_OPENAI_ENDPOINT).trim();
   const apiKey = (state.aiConfig.apiKey || DEFAULT_AZURE_OPENAI_KEY).trim();
+  if (!apiKey) {
+    throw new Error(
+      "Azure OpenAI API Key is not configured. Click '📚 Base LaTeX Resumes' in the header and paste your Azure OpenAI API Key under Section A."
+    );
+  }
 
   const makeRequest = async (includeOptionalParams) => {
     const body = {
@@ -4028,11 +3935,20 @@ async function runFullAiTailorPipeline(gateOnly = false) {
     );
     setTailorStepState(2, "done");
 
-    // STEP 3: Parallel Multi-Resume ATS & Relatability Gate
+    // STEP 3: Parallel Multi-Resume ATS & Relatability Gate (Fetched strictly from Supabase)
     setTailorStepState(3, "active");
     updateTailorStatusBadge("Step 3/5: Evaluating ATS & Relatability Gate...");
-    const resumesToCheck = state.latexResumes.length > 0 ? state.latexResumes : DEFAULT_LATEX_RESUMES;
-    appendTailorLog(`Running parallel ATS & Experience Relatability Gate across ${resumesToCheck.length} saved LaTeX resume(s)...`);
+    if (state.latexResumes.length === 0) {
+      appendTailorLog("Fetching base LaTeX resumes from Supabase (public.latex_resumes)...");
+      await fetchResumesFromSupabase(false);
+    }
+    const resumesToCheck = state.latexResumes;
+    if (resumesToCheck.length === 0) {
+      throw new Error(
+        "No base LaTeX resumes found in Supabase (`public.latex_resumes`). Run `update_sql_schema.sql` in the Supabase SQL Editor or click '📚 Base LaTeX Resumes' to save a resume to Supabase first."
+      );
+    }
+    appendTailorLog(`Running parallel ATS & Experience Relatability Gate across ${resumesToCheck.length} Supabase LaTeX resume(s)...`);
 
     const gateResults = await Promise.all(
       resumesToCheck.map(async (resObj) => {
@@ -4128,8 +4044,13 @@ async function handleForceTailorWithResume(resumeId) {
 }
 
 async function runTailoringAndCompileForResume(resumeId, matchResult) {
-  const resumeObj =
-    state.latexResumes.find((r) => r.id === resumeId) || state.latexResumes[0] || DEFAULT_LATEX_RESUMES[0];
+  if (state.latexResumes.length === 0) {
+    await fetchResumesFromSupabase(false);
+  }
+  const resumeObj = state.latexResumes.find((r) => r.id === resumeId) || state.latexResumes[0];
+  if (!resumeObj) {
+    throw new Error("No base LaTeX resume found in Supabase (`public.latex_resumes`).");
+  }
   const jobDetails = state.tailor.jobDetails;
   const maxRounds = Number.parseInt(document.getElementById("tailor-max-rounds")?.value || "2", 10);
 
@@ -4643,7 +4564,23 @@ function openAiTailorSettingsModal() {
 
 function renderLatexResumesManagerList() {
   const container = document.getElementById("latex-resumes-manager-list");
+  const savedBadge = document.getElementById("saved-resumes-count-badge");
+  if (savedBadge) {
+    savedBadge.textContent = String(state.latexResumes.length);
+  }
   if (!container) return;
+
+  if (!state.latexResumes || state.latexResumes.length === 0) {
+    container.innerHTML = `
+      <div class="latex-resume-item">
+        <div class="latex-resume-item-info">
+          <strong>No Base LaTeX Resumes Found in Supabase (<code>public.latex_resumes</code>)</strong>
+          <span>Run <code>update_sql_schema.sql</code> in the Supabase SQL Editor or use the form below to save a resume directly to Supabase.</span>
+        </div>
+      </div>
+    `;
+    return;
+  }
 
   container.innerHTML = state.latexResumes
     .map((r) => {
@@ -4653,18 +4590,18 @@ function renderLatexResumesManagerList() {
         <div class="latex-resume-item-info">
           <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
             <strong>${escapeHtml(r.name)} <span class="cell-id">(${escapeHtml(r.id)})</span></strong>
-            <span class="badge ${badge.cls}">${escapeHtml(badge.shortLabel)}</span>
+            <span class="badge ${badge.badgeClass}">${escapeHtml(badge.shortLabel)}</span>
           </div>
-          <span>Track: ${escapeHtml(r.track_type)} · ${(r.latex_code || "").length.toLocaleString()} chars LaTeX</span>
+          <span>Track: ${escapeHtml(r.track_type)} · ${(r.latex_code || "").length.toLocaleString()} chars LaTeX · Synced from Supabase</span>
         </div>
         <div class="row-actions">
           <button type="button" class="btn btn-secondary btn-sm" data-edit-latex-id="${escapeHtml(r.id)}" title="Load into form to edit">
             ✏️ Edit .tex
           </button>
-          <button type="button" class="btn btn-secondary btn-sm" data-duplicate-latex-id="${escapeHtml(r.id)}" title="Clone this resume into a new variant">
+          <button type="button" class="btn btn-secondary btn-sm" data-duplicate-latex-id="${escapeHtml(r.id)}" title="Clone this resume into a new variant in Supabase">
             📋 Clone
           </button>
-          <button type="button" class="btn btn-danger btn-sm" data-del-latex-id="${escapeHtml(r.id)}" title="Delete this resume variant">
+          <button type="button" class="btn btn-danger btn-sm" data-del-latex-id="${escapeHtml(r.id)}" title="Delete this resume variant from Supabase">
             🗑️
           </button>
         </div>
@@ -4687,7 +4624,7 @@ function loadLatexResumeIntoForm(resumeId) {
 function handleNewBlankLatexResume() {
   const nextNum = state.latexResumes.length + 1;
   const letter = String.fromCharCode(64 + Math.min(26, nextNum));
-  const templateBase = state.latexResumes[0]?.latex_code || DEFAULT_LATEX_RESUMES[0].latex_code;
+  const templateBase = state.latexResumes[0]?.latex_code || "";
   document.getElementById("lr-id").value = `RES-CUSTOM-${Date.now().toString().slice(-4)}`;
   document.getElementById("lr-name").value = `Resume ${letter} — Custom Track Variant`;
   document.getElementById("lr-track").value = "";
@@ -4707,17 +4644,15 @@ async function duplicateLatexResume(resumeId) {
     latex_code: src.latex_code,
     is_default: false
   };
-  state.latexResumes.push(copyRow);
-  saveLocalCache();
-  renderAll();
-  renderLatexResumesManagerList();
-  loadLatexResumeIntoForm(newId);
   try {
     await sbUpsert("latex_resumes", copyRow, "id");
-  } catch {
-    // Cached locally
+    await fetchResumesFromSupabase(false);
+    renderAll();
+    loadLatexResumeIntoForm(newId);
+    showToast(`Cloned "${src.name}" as ${newId} in Supabase!`);
+  } catch (err) {
+    showToast(`Failed to clone resume in Supabase: ${err.message}`);
   }
-  showToast(`Cloned "${src.name}" as ${newId}! You can now customize its track and LaTeX source.`);
 }
 
 async function handleAiGenerateBaseLatexResume() {
@@ -4752,7 +4687,8 @@ async function handleAiGenerateBaseLatexResume() {
   }
 
   try {
-    const referenceResumes = DEFAULT_LATEX_RESUMES.slice(0, 2)
+    const referenceResumes = state.latexResumes
+      .slice(0, 2)
       .map((r) => `--- ${r.name} (${r.track_type}) ---\n${r.latex_code}`)
       .join("\n\n");
 
@@ -4760,21 +4696,26 @@ async function handleAiGenerateBaseLatexResume() {
 Create a complete, standalone, 1-page compilable LaTeX resume for ANIL KUMAR tailored specifically to the target track/specialization: "${trackVal}".
 
 STRICT RULES:
-1. Preserve 100% factual accuracy from Anil Kumar's real background (Senior Software Engineer at Airtel July 2022–Present, Software Engineer at Airtel Aug 2020–June 2022, B.Tech CSE at NIT Bhopal CGPA 8.30/10, AIR 6599 JEE Mains).
+1. Preserve 100% factual accuracy from Anil Kumar's real background (Senior Software Engineer at Airtel July 2022–Present, B.Tech CSE at NIT Bhopal CGPA 8.30/10, AIR 6599 JEE Mains).
 2. Re-angle the Summary, Technical Skills grouping, Experience bullet ordering/emphasis, and Key Projects to maximize ATS & recruiter resonance for "${trackVal}".
 3. Output ONLY valid LaTeX code starting with \\documentclass and ending with \\end{document}. No markdown fences.`;
 
     const rawTex = await callAzureOpenAI(
       [
         { role: "system", content: prompt },
-        { role: "user", content: `TARGET TRACK: ${trackVal}\n\nREFERENCE BASE RESUMES:\n${referenceResumes}` }
+        {
+          role: "user",
+          content: referenceResumes
+            ? `TARGET TRACK: ${trackVal}\n\nREFERENCE BASE RESUMES FROM SUPABASE:\n${referenceResumes}`
+            : `TARGET TRACK: ${trackVal}`
+        }
       ],
       4000,
       false
     );
     const cleaned = injectOnePageGuard(cleanLatexResponse(rawTex));
     if (codeInput) codeInput.value = cleaned;
-    showToast(`✨ Generated base LaTeX resume for "${trackVal}"! Click "💾 Save Base LaTeX Resume" below to store it.`);
+    showToast(`✨ Generated base LaTeX resume for "${trackVal}"! Click "💾 Save Base LaTeX Resume" below to store it in Supabase.`);
   } catch (err) {
     showToast(`AI Base Resume Generator Error: ${err.message}`);
   } finally {
@@ -4801,50 +4742,31 @@ async function handleSaveLatexResumeForm(e) {
     is_default: idVal === "RES-JAVA"
   };
 
-  const idx = state.latexResumes.findIndex((r) => r.id === idVal);
-  if (idx >= 0) {
-    state.latexResumes[idx] = row;
-  } else {
-    state.latexResumes.push(row);
-  }
-
-  saveLocalCache();
-  renderAll();
-  renderLatexResumesManagerList();
-  document.getElementById("latex-resume-form")?.reset();
-
   try {
     await sbUpsert("latex_resumes", row, "id");
-    showToast(`Saved "${row.name}" (${row.track_type}) to Supabase & local cache!`);
-  } catch {
-    showToast(`Saved "${row.name}" (${row.track_type}) locally!`);
+    await fetchResumesFromSupabase(false);
+    renderAll();
+    document.getElementById("latex-resume-form")?.reset();
+    showToast(`Saved "${row.name}" (${row.track_type}) to Supabase!`);
+  } catch (err) {
+    showToast(`Failed to save resume to Supabase: ${err.message}`);
   }
 }
 
 async function deleteLatexResume(resumeId) {
-  if (state.latexResumes.length <= 1) {
-    showToast("Keep at least 1 base LaTeX resume.");
-    return;
+  try {
+    await sbDelete("latex_resumes", "id", resumeId);
+    await fetchResumesFromSupabase(false);
+    renderAll();
+    showToast(`Deleted resume ${resumeId} from Supabase.`);
+  } catch (err) {
+    showToast(`Failed to delete resume from Supabase: ${err.message}`);
   }
-  state.latexResumes = state.latexResumes.filter((r) => r.id !== resumeId);
-  saveLocalCache();
-  renderAll();
-  renderLatexResumesManagerList();
-  sbDelete("latex_resumes", "id", resumeId).catch(() => {});
-  showToast(`Removed resume ${resumeId}.`);
 }
 
 async function handleResetDefaultLatexResumes() {
-  // Keep any custom user-created resumes while restoring all 4 built-in starter resumes
-  const customResumes = state.latexResumes.filter(
-    (r) => !DEFAULT_LATEX_RESUMES.some((def) => def.id === r.id)
-  );
-  state.latexResumes = [...structuredClone(DEFAULT_LATEX_RESUMES), ...customResumes];
-  saveLocalCache();
+  await fetchResumesFromSupabase(true);
   renderAll();
-  renderLatexResumesManagerList();
-  sbUpsert("latex_resumes", state.latexResumes, "id").catch(() => {});
-  showToast(`Restored all ${DEFAULT_LATEX_RESUMES.length} starter LaTeX resumes (kept ${customResumes.length} custom variant(s))!`);
 }
 
 function handleSaveAiConfig() {
@@ -4893,11 +4815,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initSupabaseClient();
   bindEvents();
   renderAll();
-  // Pre-populate the LaTeX editor with Resume A so user can inspect or compile right away
-  const editorEl = document.getElementById("tailor-latex-editor");
-  if (editorEl && state.latexResumes[0]) {
-    editorEl.value = state.latexResumes[0].latex_code;
-  }
   fetchAllFromSupabase(false);
   subscribeRealtime();
 });

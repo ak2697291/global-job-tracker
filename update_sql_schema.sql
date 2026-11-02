@@ -22,10 +22,11 @@ ALTER TABLE public.job_applications
   ADD COLUMN IF NOT EXISTS excitement_score INTEGER NOT NULL DEFAULT 5;
 
 ALTER TABLE public.country_strategies
-  ADD COLUMN IF NOT EXISTS iso_code   TEXT NOT NULL DEFAULT '',
-  ADD COLUMN IF NOT EXISTS flag       TEXT NOT NULL DEFAULT '🌍',
-  ADD COLUMN IF NOT EXISTS region     TEXT NOT NULL DEFAULT 'Global',
-  ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  ADD COLUMN IF NOT EXISTS iso_code     TEXT NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS flag         TEXT NOT NULL DEFAULT '🌍',
+  ADD COLUMN IF NOT EXISTS region       TEXT NOT NULL DEFAULT 'Global',
+  ADD COLUMN IF NOT EXISTS user_remarks TEXT NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
 ALTER TABLE public.resume_checklist
   ADD COLUMN IF NOT EXISTS sort_order INTEGER NOT NULL DEFAULT 0,
@@ -40,6 +41,11 @@ CREATE TABLE IF NOT EXISTS public.latex_resumes (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE public.latex_resumes
+  ADD COLUMN IF NOT EXISTS track_type TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
+  ADD COLUMN IF NOT EXISTS latex_code TEXT NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS is_default BOOLEAN NOT NULL DEFAULT false;
 
 ALTER TABLE public.latex_resumes ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Allow public read/write on latex_resumes" ON public.latex_resumes;
@@ -430,5 +436,437 @@ INSERT INTO public.job_applications (
   'Highlight FastAPI + Java hybrid backend and RAG knowledge base automation.', 4
 )
 ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- 6. Seed Base LaTeX Resumes in Supabase (Single Source of Truth — No Hardcoded JS Resumes)
+-- ============================================================================
+INSERT INTO public.latex_resumes (
+  id, name, track_type, latex_code, is_default
+) VALUES
+(
+  'RES-JAVA',
+  'Resume A — Java 21 / Spring Boot 3 Backend (Airtel)',
+  'Java / Spring Boot Backend',
+  $tex$\documentclass[a4paper,10pt]{article}
+\usepackage[left=0.45in,top=0.4in,right=0.45in,bottom=0.4in]{geometry}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{everypage}
+\AddEverypageHook{\ifnum\value{page}>1 \errmessage{Resume exceeds 1 page}\fi}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{6pt}{4pt}
+
+\newcommand{\resumeSubheading}[4]{
+  \noindent\textbf{#1} \hfill \textbf{#2} \\
+  \textit{#3} \hfill \textit{#4} \vspace{2pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+  \noindent\textbf{#1} \hfill \textit{#2} \vspace{2pt}
+}
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-1pt}}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.18in, topsep=1pt, itemsep=1pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{2pt}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Anil Kumar}} \\[2pt]
+  {\normalsize \textbf{Senior Software Engineer (Java | Spring Boot | Backend)}} \\[3pt]
+  \small \href{mailto:ak2697291@gmail.com}{ak2697291@gmail.com} $|$ +91-6266803923 $|$
+  \href{https://leetcode.com/u/ak2697291}{leetcode.com/u/ak2697291} $|$
+  \href{https://www.linkedin.com/in/anil-kumar-a26a57136}{linkedin.com/in/anil-kumar-a26a57136}
+\end{center}
+\vspace{-6pt}
+
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0in, label={}, itemsep=1pt, topsep=1pt]
+  \item \small{\textbf{Languages \& Core:} Java (Java 8, Java 21, Multithreading, Streams API, Concurrency, JVM Tuning), C++, Python, SQL}
+  \item \small{\textbf{Frameworks:} Spring Ecosystem (Spring Boot 2/3, Spring Cloud, Spring Security, Spring Data), FastAPI, Hibernate/JPA}
+  \item \small{\textbf{Architecture \& Messaging:} Microservices, RESTful APIs, Event-Driven Architecture, Apache Kafka, RabbitMQ, Solace}
+  \item \small{\textbf{Databases \& Caching:} MongoDB (Change Streams, Aggregations), MySQL, Aerospike, Distributed Caching, Query Optimization}
+  \item \small{\textbf{DevOps, Observability \& Tools:} CI/CD (Jenkins), Grafana, Kibana, Elasticsearch, JUnit, Mockito, Git, Maven, Linux}
+\end{itemize}
+
+\section{Work Experience}
+\resumeSubHeadingListStart
+  \item
+  \resumeSubheading{Airtel}{Gurugram, India}{Senior Software Engineer}{July 2022 -- Present}
+  \resumeItemListStart
+    \resumeItem{\textbf{Spring Boot \& Java Modernization:} Spearheaded the migration of core microservices from Spring Boot 2 to 3 and Java 8 to 21, refactoring legacy dependencies to enhance system security, stability, and achieve a \textbf{40\% improvement in application performance}.}
+    \resumeItem{\textbf{High-Throughput Order Processing:} Re-engineered a mission-critical broadband order system using Java, Spring Boot, and MongoDB Change Streams, optimizing state transitions to \textbf{cut processing latency by 35\%} and \textbf{boost daily order throughput by 25\%}.}
+    \resumeItem{\textbf{Distributed Event-Driven Architecture:} Designed and scaled resilient asynchronous communication pipelines utilizing \textbf{Kafka, RabbitMQ, and Solace}, decoupling core services to handle \textbf{50K+ daily transactions} with 99.9\% fault tolerance.}
+    \resumeItem{\textbf{Reactive Microservices \& Caching:} Built low-latency backend services leveraging \textbf{Aerospike} for distributed caching and optimized complex \textbf{MySQL \& MongoDB} queries, reducing database CPU utilization and API response times by \textbf{30\%}.}
+    \resumeItem{\textbf{Resilience \& Production Excellence:} Implemented circuit breakers, rate limiters, and automated retry mechanisms alongside comprehensive \textbf{JUnit/Mockito} unit test suites (85\%+ code coverage), reducing production regressions by \textbf{30\%}.}
+    \resumeItem{\textbf{Observability \& Incident Automation:} Engineered real-time monitoring dashboards in \textbf{Grafana and Kibana} and built automated diagnostic workflows that \textbf{reduced Mean Time to Resolution (MTTR) by 90\%} during critical production incidents.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Education}
+\resumeSubHeadingListStart
+  \item
+  \resumeSubheading{National Institute of Technology (NIT), Bhopal}{Bhopal, India}{Bachelor of Technology in Computer Science and Engineering}{July 2018 -- May 2022}
+  \resumeItemListStart
+    \resumeItem{\textbf{CGPA:} 8.30 / 10.0 $|$ \textbf{Coursework:} Data Structures \& Algorithms, Operating Systems, DBMS, Computer Networks, OOP}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Key Projects}
+\resumeSubHeadingListStart
+  \item
+  \resumeProjectHeading{High-Performance Order Management System}{Java, Spring Boot, Kafka, MongoDB, Aerospike, REST APIs}
+  \resumeItemListStart
+    \resumeItem{Architected a scalable microservices-based backend platform capable of handling real-time order lifecycle management, inventory locking, and asynchronous payment callbacks.}
+    \resumeItem{Integrated \textbf{Apache Kafka} for event sourcing and \textbf{Aerospike} as a high-speed read-through cache, achieving sub-50ms API response times under heavy concurrent load.}
+  \resumeItemListEnd
+  \item
+  \resumeProjectHeading{Android Vision Improvement System}{Java, Android SDK, Object-Oriented Design, Multithreading}
+  \resumeItemListStart
+    \resumeItem{Developed a mobile health application featuring real-time ocular exercise tracking, custom reminder scheduling, and interactive visual acuity testing modules using clean MVC architecture.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Achievements \& Awards}
+\resumeItemListStart
+  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for exceptional ownership in delivering zero-downtime Java/Spring Boot migrations and high-scale backend systems.}
+  \resumeItem{\textbf{Spirit of Collaboration Award:} Honored for cross-functional technical leadership across SRE, Product, and Platform engineering teams.}
+  \resumeItem{\textbf{Academic Excellence:} Secured \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% among 1.2M+ candidates) \& awarded the prestigious \textbf{Reliance Foundation Scholarship}.}
+\resumeItemListEnd
+
+\end{document}$tex$,
+  true
+),
+(
+  'RES-GENAI',
+  'Resume B — GenAI / Agentic AI & Backend Engineer (Airtel)',
+  'GenAI / Agentic AI Engineer',
+  $tex$\documentclass[a4paper,10pt]{article}
+\usepackage[left=0.45in,top=0.4in,right=0.45in,bottom=0.4in]{geometry}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{everypage}
+\AddEverypageHook{\ifnum\value{page}>1 \errmessage{Resume exceeds 1 page}\fi}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{6pt}{4pt}
+
+\newcommand{\resumeSubheading}[4]{
+  \noindent\textbf{#1} \hfill \textbf{#2} \\
+  \textit{#3} \hfill \textit{#4} \vspace{2pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+  \noindent\textbf{#1} \hfill \textit{#2} \vspace{2pt}
+}
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-1pt}}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.18in, topsep=1pt, itemsep=1pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{2pt}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Anil Kumar}} \\[2pt]
+  {\normalsize \textbf{Senior Software Engineer $|$ GenAI Engineer}} \\[3pt]
+  \small \href{mailto:ak2697291@gmail.com}{ak2697291@gmail.com} $|$ +91-6266803923 $|$
+  \href{https://leetcode.com/u/ak2697291}{leetcode.com/u/ak2697291} $|$
+  \href{https://www.linkedin.com/in/anil-kumar-a26a57136}{linkedin.com/in/anil-kumar-a26a57136}
+\end{center}
+\vspace{-6pt}
+
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0in, label={}, itemsep=1pt, topsep=1pt]
+  \item \small{\textbf{Generative AI \& Agentic Systems:} Large Language Models (LLMs -- GPT-4, Claude, Gemini), Agentic AI Frameworks, Prompt Engineering, Retrieval-Augmented Generation (RAG), AI Agent Orchestration, Context Management, Tool Calling}
+  \item \small{\textbf{Languages \& Backend Frameworks:} Python, Java (Java 8, Java 21), CrewAI, FastAPI, Spring Boot (2/3), RESTful APIs, Microservices Architecture}
+  \item \small{\textbf{Messaging \& Event-Driven:} RabbitMQ, Apache Kafka, Solace, Event-Driven Systems, Asynchronous Processing}
+  \item \small{\textbf{Databases, Vector Stores \& DevOps:} MongoDB, MySQL, VectorDB, FAISS, Aerospike, Kibana, Grafana, Jenkins (CI/CD), Git}
+\end{itemize}
+
+\section{Work Experience}
+\resumeSubHeadingListStart
+  \item
+  \resumeSubheading{Airtel}{Gurugram, India}{Senior Software Engineer}{July 2022 -- Present}
+  \resumeItemListStart
+    \resumeItem{\textbf{Production Agentic AI System for SRE Operations:} Architected and deployed an end-to-end \textbf{Autonomous Agentic AI Platform} from scratch using \textbf{Python, CrewAI, and FastAPI} that autonomously triages production alerts, cutting root-cause analysis (RCA) time by \textbf{90\%} (from 45+ mins to under 5 mins).}
+    \resumeItem{\textbf{Multi-Agent AI Architecture \& Tool Integration:} Engineered specialized AI agents (\textbf{Log Analyzer, Metric Correlator, and RCA Synthesizer}) powered by \textbf{GPT-4 \& Claude}, integrating directly with \textbf{Kibana, Grafana, and internal microservices} via structured tool-calling and \textbf{RabbitMQ} event queues.}
+    \resumeItem{\textbf{RAG Pipeline \& Vector Knowledge Base:} Built a domain-specific \textbf{Retrieval-Augmented Generation (RAG)} pipeline utilizing \textbf{FAISS and VectorDB} over historical incident post-mortems, runbooks, and architecture docs, improving automated diagnostic accuracy by \textbf{45\%}.}
+    \resumeItem{\textbf{High-Scale Backend \& Microservices Modernization:} Led the migration of core backend services from \textbf{Spring Boot 2 to 3 and Java 8 to 21}, optimizing high-concurrency workflows and achieving a \textbf{40\% boost in system performance}.}
+    \resumeItem{\textbf{Event-Driven Order Orchestration:} Re-architected a broadband order management pipeline using \textbf{Spring Boot, Kafka, and MongoDB Change Streams}, reducing end-to-end order processing latency by \textbf{35\%} and increasing daily throughput by \textbf{25\%}.}
+    \resumeItem{\textbf{Cross-Functional AI Adoption \& Guardrails:} Partnered with platform and SRE leaders to establish prompt engineering best practices, deterministic LLM guardrails, and token-cost optimization strategies across engineering teams.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Education}
+\resumeSubHeadingListStart
+  \item
+  \resumeSubheading{National Institute of Technology (NIT), Bhopal}{Bhopal, India}{Bachelor of Technology in Computer Science and Engineering}{July 2018 -- May 2022}
+  \resumeItemListStart
+    \resumeItem{\textbf{CGPA:} 8.30 / 10.0 $|$ \textbf{Coursework:} Data Structures \& Algorithms, Artificial Intelligence, Operating Systems, DBMS, Computer Networks}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Key Projects}
+\resumeSubHeadingListStart
+  \item
+  \resumeProjectHeading{Autonomous SRE Agent for Incident Management}{Python, CrewAI, FastAPI, LLMs, RAG, FAISS, VectorDB, RabbitMQ, Kibana}
+  \resumeItemListStart
+    \resumeItem{Designed a collaborative multi-agent workflow capable of ingesting real-time alert payloads from \textbf{RabbitMQ}, querying distributed logs in \textbf{Kibana}, and retrieving relevant runbooks via \textbf{FAISS} semantic search.}
+    \resumeItem{Implemented deterministic guardrails, structured JSON outputs, and human-in-the-loop webhook notifications for automated remediation recommendations.}
+  \resumeItemListEnd
+  \item
+  \resumeProjectHeading{Android Vision Improvement System}{Java, Android SDK, Mobile Application Development}
+  \resumeItemListStart
+    \resumeItem{Built an interactive mobile application offering guided eye-care exercises, automated screen-break scheduling, and visual acuity tracking.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Achievements \& Awards}
+\resumeItemListStart
+  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for pioneering production Agentic AI automation and delivering high-impact backend architectures at Airtel.}
+  \resumeItem{\textbf{Spirit of Collaboration Award:} Awarded for driving cross-team engineering synergy and operational excellence.}
+  \resumeItem{\textbf{Academic Distinction:} Achieved \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% nationwide) and recipient of the \textbf{Reliance Foundation Scholarship}.}
+\resumeItemListEnd
+
+\end{document}$tex$,
+  false
+),
+(
+  'RES-DIST-SRE',
+  'Resume C — Distributed Systems, Cloud & SRE Platform',
+  'Distributed Systems / Cloud SRE',
+  $tex$\documentclass[letterpaper,11pt]{article}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{everypage}
+\AddEverypageHook{\ifnum\value{page}>1 \errmessage{Resume exceeds 1 page}\fi}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\newcommand{\resumeItem}[1]{\item\small{{#1 \vspace{-2pt}}}}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small\textbf{#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge \scshape Anil Kumar} \\ \vspace{2pt}
+    \small Senior Distributed Systems, Cloud Infrastructure \& SRE Platform Engineer \\ \vspace{2pt}
+    \small +91-6266803923 $|$ \href{mailto:ak2697291@gmail.com}{\underline{ak2697291@gmail.com}} $|$
+    \href{https://www.linkedin.com/in/anil-kumar-a26a57136}{\underline{linkedin.com/in/anil-kumar-a26a57136}} $|$
+    \href{https://leetcode.com/u/ak2697291}{\underline{leetcode.com/u/ak2697291}}
+\end{center}
+
+\section{Summary}
+\small{Senior Distributed Systems \& SRE Platform Engineer with \textbf{4+ years of experience} at \textbf{Airtel} architecting mission-critical, fault-tolerant infrastructure and event-driven platforms serving \textbf{350M+ subscribers}. Proven track record in \textbf{Docker, Kubernetes, Kafka, RabbitMQ, Solace, Aerospike, Kibana observability, and autonomous incident RCA automation} (cutting MTTR by \textbf{90\%} and runtime resource consumption by \textbf{25\%}). B.Tech in Computer Science \& Engineering from \textbf{NIT Bhopal}.}
+
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Cloud, SRE \& Observability}{: Docker, Kubernetes, Linux, Jenkins CI/CD, Git, Kibana, Grafana, Distributed Tracing, Log Aggregation, Automated RCA, SLA/SLO Governance} \\
+     \textbf{Distributed Messaging \& Streaming}{: Apache Kafka, RabbitMQ, Solace PubSub+, MongoDB Change Streams, Event-Driven Architecture, High-Availability Systems} \\
+     \textbf{Languages \& High-Throughput Data}{: Java (8, 21), Python, SQL, Bash, Aerospike, Redis, MySQL, PostgreSQL, MongoDB, FAISS}
+    }}
+\end{itemize}
+
+\section{Work Experience}
+\resumeSubHeadingListStart
+
+  \resumeSubheading
+    {Senior Software Engineer (Distributed Systems \& SRE Platform)}{July 2022 -- Present}
+    {Airtel (Bharti Airtel Ltd.)}{Gurugram, India}
+    \resumeItemListStart
+      \resumeItem{Architected and operated an \textbf{Autonomous Multi-Agent SRE \& Incident Management Platform} integrating \textbf{Kibana, Grafana, RabbitMQ, FAISS, and Python/FastAPI}, reducing production Root Cause Analysis (RCA) and Mean Time To Resolution (MTTR) by \textbf{90\%}.}
+      \resumeItem{Engineered high-availability, real-time event streaming pipelines using \textbf{MongoDB Change Streams, Apache Kafka, and Solace}, eliminating polling bottlenecks and cutting end-to-end processing latency by \textbf{35\%}.}
+      \resumeItem{Spearheaded runtime modernization to \textbf{Java 21 and Spring Boot 3} across containerized microservices, achieving a \textbf{40\% throughput increase} and \textbf{25\% reduction in memory/compute footprint}.}
+      \resumeItem{Tuned distributed caching tiers with \textbf{Aerospike and MySQL}, improving tail-latency SLA compliance and boosting read throughput by \textbf{30\%} under peak telecom traffic.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {National Institute of Technology (NIT), Bhopal}{July 2018 -- May 2022}
+    {Bachelor of Technology in Computer Science and Engineering}{CGPA: 8.30 / 10.0}
+\resumeSubHeadingListEnd
+
+\section{Achievements \& Awards}
+\resumeItemListStart
+  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for 99.99\% platform reliability, SRE incident automation, and cloud cost optimization.}
+  \resumeItem{\textbf{Academic Distinction:} Achieved \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% nationwide) and recipient of the \textbf{Reliance Foundation Scholarship}.}
+\resumeItemListEnd
+
+\end{document}$tex$,
+  false
+),
+(
+  'RES-FULLSTACK',
+  'Resume D — Senior Full-Stack Engineer (React + Java/Python)',
+  'Full-Stack (React + Java/Python)',
+  $tex$\documentclass[letterpaper,11pt]{article}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{everypage}
+\AddEverypageHook{\ifnum\value{page}>1 \errmessage{Resume exceeds 1 page}\fi}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\newcommand{\resumeItem}[1]{\item\small{{#1 \vspace{-2pt}}}}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small\textbf{#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge \scshape Anil Kumar} \\ \vspace{2pt}
+    \small Senior Full-Stack Software Engineer (React.js, TypeScript/JS, Java 21, Spring Boot 3, FastAPI) \\ \vspace{2pt}
+    \small +91-6266803923 $|$ \href{mailto:ak2697291@gmail.com}{\underline{ak2697291@gmail.com}} $|$
+    \href{https://www.linkedin.com/in/anil-kumar-a26a57136}{\underline{linkedin.com/in/anil-kumar-a26a57136}} $|$
+    \href{https://leetcode.com/u/ak2697291}{\underline{leetcode.com/u/ak2697291}}
+\end{center}
+
+\section{Summary}
+\small{Product-minded Senior Full-Stack Engineer with \textbf{4+ years of experience} at \textbf{Airtel} delivering end-to-end web platforms, self-serve enterprise portals, and AI-powered operational dashboards backed by high-throughput microservices (\textbf{350M+ user scale}). Skilled across \textbf{React.js, JavaScript/TypeScript, HTML5/CSS3, Java 21, Spring Boot 3, Python, FastAPI, Kafka, and PostgreSQL/MongoDB}. B.Tech in Computer Science \& Engineering from \textbf{NIT Bhopal}.}
+
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Frontend \& Web UI}{: React.js, JavaScript (ES6+), TypeScript, HTML5, CSS3, Responsive Dashboards, REST/SSE Real-Time Streaming UI, State Management} \\
+     \textbf{Backend \& APIs}{: Java 21, Spring Boot 3, Python, FastAPI, RESTful APIs, GraphQL, Microservices, JWT/OAuth2 Security, Webhooks} \\
+     \textbf{Databases, Messaging \& Cloud}{: PostgreSQL, MySQL, MongoDB, Aerospike, Redis, Apache Kafka, RabbitMQ, Docker, Kubernetes, Jenkins CI/CD}
+    }}
+\end{itemize}
+
+\section{Work Experience}
+\resumeSubHeadingListStart
+
+  \resumeSubheading
+    {Senior Software Engineer (Full-Stack Product \& Platform Engineering)}{July 2022 -- Present}
+    {Airtel (Bharti Airtel Ltd.)}{Gurugram, India}
+    \resumeItemListStart
+      \resumeItem{Designed and built an interactive \textbf{React.js + FastAPI + Spring Boot 3 Operations \& AI Incident Portal} enabling real-time telemetry visualization, one-click remediation workflows, and \textbf{90\% faster incident triage}.}
+      \resumeItem{Architected a \textbf{Full-Stack Self-Serve Partner \& Configuration Portal} (\textbf{React frontend + Spring Boot 3 REST APIs}), eliminating \textbf{70\% of manual engineering tickets} and accelerating partner onboarding by \textbf{60\%}.}
+      \resumeItem{Engineered real-time UI notification and data-sync pipelines powered by \textbf{MongoDB Change Streams, Kafka, and Aerospike}, reducing end-to-end data refresh latency by \textbf{35\%}.}
+      \resumeItem{Upgraded backend API services to \textbf{Java 21 and Spring Boot 3}, improving API response times by \textbf{40\%} across high-concurrency web and mobile client traffic.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {National Institute of Technology (NIT), Bhopal}{July 2018 -- May 2022}
+    {Bachelor of Technology in Computer Science and Engineering}{CGPA: 8.30 / 10.0}
+\resumeSubHeadingListEnd
+
+\section{Achievements \& Awards}
+\resumeItemListStart
+  \resumeItem{\textbf{2x Best Team Award \& 6x Airtel ACE Award:} Recognized for delivering high-impact full-stack portals, AI-assisted dashboards, and scalable backend services.}
+  \resumeItem{\textbf{Academic Distinction:} Achieved \textbf{All India Rank (AIR) 6599} in JEE Mains 2018 (Top 0.5\% nationwide) and recipient of the \textbf{Reliance Foundation Scholarship}.}
+\resumeItemListEnd
+
+\end{document}$tex$,
+  false
+)
+ON CONFLICT (id) DO UPDATE SET
+  name       = EXCLUDED.name,
+  track_type = EXCLUDED.track_type,
+  latex_code = EXCLUDED.latex_code,
+  is_default = EXCLUDED.is_default,
+  updated_at = NOW();
 
 COMMIT;

@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS public.country_strategies (
   top_job_portals          TEXT NOT NULL DEFAULT '',
   tier_1_sponsor_companies TEXT NOT NULL DEFAULT '',
   application_tip          TEXT NOT NULL DEFAULT '',
+  user_remarks             TEXT NOT NULL DEFAULT '',
   created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at               TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
