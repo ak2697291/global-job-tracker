@@ -126,14 +126,19 @@ EXECUTE FUNCTION public.set_updated_at();
 -- AI Resume Tailor & LaTeX-to-PDF Studio
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.latex_resumes (
-  id          TEXT PRIMARY KEY,
-  name        TEXT NOT NULL,
-  track_type  TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
-  latex_code  TEXT NOT NULL,
-  is_default  BOOLEAN NOT NULL DEFAULT false,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id              TEXT PRIMARY KEY,
+  name            TEXT NOT NULL,
+  track_type      TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
+  target_country  TEXT NOT NULL DEFAULT 'Global',
+  template_style  TEXT NOT NULL DEFAULT 'jakes-ats',
+  section_order   TEXT NOT NULL DEFAULT 'summary,skills,experience,projects,education,achievements',
+  latex_code      TEXT NOT NULL,
+  is_default      BOOLEAN NOT NULL DEFAULT false,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_latex_resumes_target_country ON public.latex_resumes (target_country);
 
 DROP TRIGGER IF EXISTS trg_latex_resumes_updated_at ON public.latex_resumes;
 CREATE TRIGGER trg_latex_resumes_updated_at

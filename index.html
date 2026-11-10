@@ -94,6 +94,9 @@
         <button type="button" class="view-tab" data-view="tailor" role="tab" aria-selected="false">
           🤖 AI Resume Tailor &amp; ATS <span class="tab-badge tab-badge-ai">GPT-5 + LaTeX PDF</span>
         </button>
+        <button type="button" class="view-tab" data-view="creator" role="tab" aria-selected="false">
+          🎨 Resume Creator Studio <span class="tab-badge tab-badge-ai">Country + AI</span>
+        </button>
         <button type="button" class="view-tab" data-view="kanban" role="tab" aria-selected="false">
           🗂️ Kanban Board
         </button>
@@ -300,6 +303,9 @@
             </p>
           </div>
           <div class="tailor-hero-actions">
+            <button type="button" id="btn-open-creator-from-tailor" class="btn btn-accent">
+              <span>🎨 Open Resume Creator Studio</span>
+            </button>
             <button type="button" id="btn-manage-latex-resumes" class="btn btn-secondary">
               <span>📚 Base LaTeX Resumes &amp; AI Settings</span>
             </button>
@@ -325,11 +331,11 @@
 
               <div class="tailor-input-grid">
                 <div class="field field-span-2">
-                  <label for="tailor-job-url">Job Posting URL (Auto-Scrapes via Jina Reader &amp; HTML/JSON-LD Proxy)</label>
+                  <label for="tailor-job-url">Job Posting URL (Auto-Resolves LinkedIn <code>currentJobId</code> Guest API, Jina Reader &amp; JSON-LD Proxies)</label>
                   <input
                     type="url"
                     id="tailor-job-url"
-                    placeholder="https://careers.booking.com/... or https://www.adyen.com/careers/..."
+                    placeholder="https://www.linkedin.com/jobs/search-results/?currentJobId=4477742261... or https://careers.booking.com/..."
                   >
                 </div>
 
@@ -347,6 +353,42 @@
                     <option value="2" selected>2 Rounds (Recommended High ATS Fit)</option>
                     <option value="3">3 Rounds (Maximum Polish)</option>
                   </select>
+                </div>
+
+                <div class="field">
+                  <label for="tailor-target-country">Target Job Country (Country-First Resume Matching)</label>
+                  <select id="tailor-target-country">
+                    <option value="AUTO">🔍 Auto-Detect from Job URL / JD (Fallback → Global)</option>
+                    <option value="Global">🌍 Global (All Countries / Generic Resumes)</option>
+                    <option value="Germany">🇩🇪 Germany</option>
+                    <option value="Netherlands">🇳🇱 Netherlands</option>
+                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                    <option value="UAE">🇦🇪 UAE (Dubai / Abu Dhabi)</option>
+                    <option value="Ireland">🇮🇪 Ireland</option>
+                    <option value="Switzerland">🇨🇭 Switzerland</option>
+                    <option value="Sweden">🇸🇪 Sweden</option>
+                    <option value="Poland">🇵🇱 Poland</option>
+                    <option value="Spain">🇪🇸 Spain</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Estonia">🇪🇪 Estonia</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="Singapore">🇸🇬 Singapore</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="United States">🇺🇸 United States</option>
+                    <option value="India">🇮🇳 India</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="tailor-compare-all-countries">Country Resume Pool Rule</label>
+                  <label class="checkbox-inline-card" for="tailor-compare-all-countries">
+                    <input type="checkbox" id="tailor-compare-all-countries">
+                    <span>Also include other countries' resumes alongside country/global pool</span>
+                  </label>
+                  <div id="tailor-country-match-hint" class="country-match-hint">
+                    Checks country-specific resumes first; falls back to Global generic resumes if none exist.
+                  </div>
                 </div>
               </div>
 
@@ -438,6 +480,7 @@
                 </div>
                 <span id="tailor-gate-verdict-badge" class="badge badge-java">Evaluating...</span>
               </div>
+              <div id="tailor-country-resolution-banner" class="country-resolution-banner" hidden></div>
               <div id="tailor-gate-comparison-grid" class="gate-comparison-grid"></div>
             </div>
 
@@ -560,6 +603,490 @@
               </form>
             </div>
           </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VIEW 2B: COUNTRY-AWARE RESUME CREATOR STUDIO & AI ENHANCER
+         ====================================================================== -->
+    <section id="view-creator" class="view-panel" hidden="until-found">
+      <div class="creator-studio-shell">
+        <!-- Studio Hero Header -->
+        <div class="tailor-hero-bar">
+          <div class="tailor-hero-left">
+            <div class="tailor-hero-badges">
+              <span class="badge badge-java">🌍 Country-Scoped &amp; Global Resumes</span>
+              <span class="badge badge-genai">🪄 Multi-Template LLM LaTeX Generator</span>
+              <span class="badge badge-sponsor">✨ Per-Section &amp; Full-Resume AI Enhancer</span>
+            </div>
+            <h2>🎨 Country-Aware LaTeX Resume Creator &amp; AI Enhancement Studio</h2>
+            <p>
+              Create country-specific or universal <strong>Global (All Countries)</strong> resumes with country-aligned section ordering, generate multiple LaTeX templates using the LLM, build or enhance individual sections with <strong>✨ AI Help</strong>, or customize any existing resume via prompt and compile directly to PDF.
+            </p>
+          </div>
+          <div class="tailor-hero-actions">
+            <button type="button" id="btn-creator-new-resume" class="btn btn-primary">
+              <span>➕ New Country / Global Resume</span>
+            </button>
+            <button type="button" id="btn-creator-sync-supabase" class="btn btn-secondary btn-sm">
+              <span>🔄 Sync from Supabase</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Saved Resumes Library Strip (Filtered by Country or Global) -->
+        <div class="studio-card creator-library-card">
+          <div class="studio-card-header">
+            <div>
+              <span class="step-kicker">SUPABASE RESUME LIBRARY (`public.latex_resumes`)</span>
+              <h3>Saved Country &amp; Global Resumes (<span id="creator-library-count">0</span>)</h3>
+            </div>
+            <div class="creator-library-filters" id="creator-country-filter-pills" role="group" aria-label="Filter saved resumes by country">
+              <button type="button" class="region-chip active" data-creator-filter="ALL">🌐 All Saved</button>
+              <button type="button" class="region-chip" data-creator-filter="Global">🌍 Global (All Countries)</button>
+            </div>
+          </div>
+          <div id="creator-saved-resumes-grid" class="creator-saved-resumes-grid"></div>
+        </div>
+
+        <!-- Architecture & Country Configuration Bar -->
+        <div class="studio-card creator-config-card">
+          <div class="studio-card-header">
+            <div>
+              <span class="step-kicker">STEP 1 · TARGET COUNTRY, TEMPLATE &amp; TRACK ARCHITECTURE</span>
+              <h3>Configure Resume Identity, Country Norms &amp; LaTeX Template</h3>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+              <span id="creator-active-country-badge" class="badge badge-sponsor">🌍 Global (All Countries)</span>
+              <button type="button" id="btn-creator-apply-country-order" class="btn btn-secondary btn-sm" title="Reorder and configure sections to match the selected country's hiring standards">
+                📐 Apply Country's Recommended Section Order
+              </button>
+            </div>
+          </div>
+
+          <div class="creator-config-grid">
+            <div class="field">
+              <label for="creator-target-country">Target Country Preference *</label>
+              <select id="creator-target-country">
+                <option value="Global">🌍 Global (All Countries / Generic Fallback)</option>
+                <option value="Germany">🇩🇪 Germany (EU Blue Card / Anabin H+ Order)</option>
+                <option value="Netherlands">🇳🇱 Netherlands (HSM Sponsor / 30% Ruling)</option>
+                <option value="United Kingdom">🇬🇧 United Kingdom (Skilled Worker / Executive Impact)</option>
+                <option value="UAE">🇦🇪 UAE — Dubai / Abu Dhabi (Tax-Free Scale &amp; FinTech/AI)</option>
+                <option value="Ireland">🇮🇪 Ireland (Critical Skills CSEP Format)</option>
+                <option value="Switzerland">🇨🇭 Switzerland (High-Precision Engineering CV)</option>
+                <option value="Sweden">🇸🇪 Sweden (Nordic Flat-Hierarchy &amp; Impact)</option>
+                <option value="Poland">🇵🇱 Poland (EU B2B / High-Growth Tech Hub)</option>
+                <option value="Spain">🇪🇸 Spain (Beckham Law / International Tech)</option>
+                <option value="France">🇫🇷 France (Passeport Talent Tech Format)</option>
+                <option value="Estonia">🇪🇪 Estonia (Digital Nomad / EU Startup Specialist)</option>
+                <option value="Japan">🇯🇵 Japan (J-Skip / HSP Chronological Clarity)</option>
+                <option value="Singapore">🇸🇬 Singapore (EP / COMPASS Quantified FinTech)</option>
+                <option value="Australia">🇦🇺 Australia (SID Subclass 482 Achievement CV)</option>
+                <option value="Canada">🇨🇦 Canada (Global Talent Stream 1-Page ATS)</option>
+                <option value="United States">🇺🇸 United States (Big-Tech Strict 1-Page ATS)</option>
+                <option value="India">🇮🇳 India (Product / Unicorn High-Scale SDE)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="creator-custom-country">Or Any Custom Country Worldwide</label>
+              <input
+                type="text"
+                id="creator-custom-country"
+                list="world-countries-datalist"
+                placeholder="Optional: Type any country (e.g. Denmark, Luxembourg)..."
+              >
+            </div>
+
+            <div class="field">
+              <label for="creator-template-style">LaTeX Template Style *</label>
+              <select id="creator-template-style">
+                <option value="jakes-ats">📄 Jake's Single-Column ATS Standard (Universal 1-Page)</option>
+                <option value="eu-blue-card">🇪🇺 European / German Blue-Card Structured (Anabin &amp; Visa Header)</option>
+                <option value="executive-impact">🏛️ UK / UAE Executive &amp; FinTech Impact (Summary + Core Matrix)</option>
+                <option value="compact-engineering">⚡ High-Density Systems Engineering (Max Technical Depth)</option>
+                <option value="academic-cv">🎓 Research, AI &amp; Publications CV (Education &amp; R&amp;D First)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="creator-resume-track">Role Track / Specialization *</label>
+              <input
+                type="text"
+                id="creator-resume-track"
+                list="resume-tracks-datalist"
+                value="Java / Spring Boot Backend"
+                placeholder="e.g. Java / Spring Boot Backend, GenAI / Agentic AI, Cloud SRE..."
+              >
+            </div>
+
+            <div class="field">
+              <label for="creator-resume-name">Resume Display Name *</label>
+              <input
+                type="text"
+                id="creator-resume-name"
+                value="Global — Senior Java / Spring Boot &amp; Distributed Systems"
+                placeholder="e.g. Germany — Senior Backend Engineer (EU Blue Card)"
+              >
+            </div>
+
+            <div class="field">
+              <label for="creator-resume-id">Resume ID (Supabase Primary Key)</label>
+              <input
+                type="text"
+                id="creator-resume-id"
+                value="RES-GLOBAL-JAVA"
+                placeholder="e.g. RES-DE-JAVA, RES-NL-BACKEND, RES-GLOBAL-AI"
+              >
+            </div>
+          </div>
+
+          <!-- Dynamic Country Resume Convention & Section Order Banner -->
+          <div id="creator-country-norms-banner" class="country-norms-banner"></div>
+        </div>
+
+        <!-- Main 2-Column Creator Studio Grid: Left = Builder/AI Modes, Right = Live .tex + PDF Workbench -->
+        <div class="creator-main-grid">
+          <!-- Left Column: Switchable Creation & AI Enhancement Modes -->
+          <div class="creator-left-column">
+            <!-- Mode Switcher Pills -->
+            <div class="creator-mode-tabs" role="tablist" aria-label="Resume Creation Modes">
+              <button type="button" class="creator-mode-btn active" data-creator-mode="sections" role="tab" aria-selected="true">
+                🧱 1. Custom Section Builder &amp; ✨ AI Section Help
+              </button>
+              <button type="button" class="creator-mode-btn" data-creator-mode="generator" role="tab" aria-selected="false">
+                🪄 2. LLM Template Generator (From Content)
+              </button>
+              <button type="button" class="creator-mode-btn" data-creator-mode="customize" role="tab" aria-selected="false">
+                🔧 3. Customize Existing Resume with AI Prompt
+              </button>
+            </div>
+
+            <!-- ==============================================================
+                 MODE 1: CUSTOM SECTION-BY-SECTION BUILDER + PER-SECTION AI HELP
+                 ============================================================== -->
+            <div id="creator-panel-sections" class="creator-mode-panel">
+              <!-- Candidate Header & Contact Metadata Card -->
+              <div class="studio-card">
+                <div class="studio-card-header">
+                  <div>
+                    <span class="step-kicker">HEADER &amp; COUNTRY METADATA</span>
+                    <h3>Candidate Contact, Headline &amp; Visa / Relocation Line</h3>
+                  </div>
+                  <button type="button" id="btn-creator-ai-header" class="btn btn-secondary btn-sm">
+                    ✨ AI Align Header for Country
+                  </button>
+                </div>
+
+                <div class="creator-header-grid">
+                  <div class="field">
+                    <label for="ch-full-name">Full Name</label>
+                    <input type="text" id="ch-full-name" value="Anil Kumar">
+                  </div>
+                  <div class="field">
+                    <label for="ch-headline">Target Role Headline</label>
+                    <input type="text" id="ch-headline" value="Senior Software Engineer — Distributed Systems, Java 21 &amp; GenAI">
+                  </div>
+                  <div class="field">
+                    <label for="ch-email">Email</label>
+                    <input type="email" id="ch-email" value="ak2697291@gmail.com" autocomplete="email">
+                  </div>
+                  <div class="field">
+                    <label for="ch-phone">Phone</label>
+                    <input type="tel" id="ch-phone" value="+91-6266803923" autocomplete="tel">
+                  </div>
+                  <div class="field">
+                    <label for="ch-links">Portfolio / LinkedIn / GitHub / LeetCode Links</label>
+                    <input type="text" id="ch-links" value="linkedin.com/in/anil-kumar-a26a57136 | github.com/ak2697291 | leetcode.com/u/ak2697291">
+                  </div>
+                  <div class="field">
+                    <label for="ch-visa-note">Country Visa / Relocation / Anabin Status Line</label>
+                    <input type="text" id="ch-visa-note" value="Open to Global Relocation &amp; Visa Sponsorship | NIT Bhopal (Anabin H+ Recognized)">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reorderable Sections Composer Card -->
+              <div class="studio-card">
+                <div class="studio-card-header">
+                  <div>
+                    <span class="step-kicker">CUSTOM SECTION COMPOSER &amp; ORDERING</span>
+                    <h3>Resume Sections (Reorder &amp; Enhance Individual Sections or Whole Resume with AI)</h3>
+                  </div>
+                  <div style="display:flex; gap:0.45rem; flex-wrap:wrap; align-items:center;">
+                    <select id="creator-add-section-type" aria-label="Select section type to add" style="padding:0.35rem 0.55rem; border-radius:var(--radius-sm); border:1px solid var(--border-strong); background:var(--bg-elevated); color:var(--text-primary); font-size:0.78rem; font-weight:600;">
+                      <option value="custom">📝 Custom Section</option>
+                      <option value="summary">🧭 Executive Summary &amp; Visa Pitch</option>
+                      <option value="skills">🛠️ Technical Skills</option>
+                      <option value="experience">💼 Work Experience</option>
+                      <option value="projects">🚀 Key Projects &amp; Architecture</option>
+                      <option value="education">🎓 Education (Anabin H+)</option>
+                      <option value="achievements">🏆 Achievements &amp; Competitive Coding</option>
+                      <option value="certifications">📜 Certifications &amp; Cloud Badges</option>
+                      <option value="languages">🗣️ Languages &amp; Work Permit Eligibility</option>
+                    </select>
+                    <button type="button" id="btn-creator-add-section" class="btn btn-secondary btn-sm">
+                      ➕ Add Section
+                    </button>
+                    <button type="button" id="btn-creator-enhance-all-sections" class="btn btn-accent btn-sm">
+                      ✨ AI Enhance Whole Resume &amp; Build .tex
+                    </button>
+                  </div>
+                </div>
+
+                <p class="card-sub" style="margin-bottom: 0.85rem;">
+                  Use <strong>↑ / ↓</strong> to change section ordering for the target country, edit content directly, or click <strong>✨ AI Enhance Section</strong> on any section to let the LLM upgrade your bullets, metrics, and keywords.
+                </p>
+
+                <div id="creator-sections-container" class="creator-sections-list"></div>
+
+                <div class="creator-cta-bar">
+                  <button type="button" id="btn-creator-assemble-tex" class="btn btn-primary">
+                    ⚡ Assemble Compilable `.tex` from Sections Now
+                  </button>
+                  <button type="button" id="btn-creator-ai-polish-full" class="btn btn-accent">
+                    ✨ AI Enhance Entire Resume &amp; Compile PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==============================================================
+                 MODE 2: LLM MULTI-TEMPLATE GENERATOR (FROM RAW CONTENT)
+                 ============================================================== -->
+            <div id="creator-panel-generator" class="creator-mode-panel" hidden>
+              <div class="studio-card">
+                <div class="studio-card-header">
+                  <div>
+                    <span class="step-kicker">LLM TEMPLATE &amp; COUNTRY GENERATOR</span>
+                    <h3>🪄 Generate Complete `.tex` Templates from Raw Content</h3>
+                  </div>
+                  <span class="badge badge-genai">GPT-5 LaTeX Architect</span>
+                </div>
+
+                <p class="card-sub" style="margin-bottom: 0.9rem;">
+                  Provide your raw experience notes, achievements, or CV text below. The LLM will structure the sections, order them according to your selected <strong>Target Country</strong> norms, and generate a compilable 1-page <code>.tex</code> resume in your chosen template style.
+                </p>
+
+                <div class="field">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.25rem;">
+                    <label for="creator-raw-content">Your Experience, Skills, Education &amp; Raw Achievements *</label>
+                    <button type="button" id="btn-creator-prefill-raw" class="btn btn-secondary btn-sm">
+                      📥 Pre-Fill from Active Resume / Profile
+                    </button>
+                  </div>
+                  <textarea
+                    id="creator-raw-content"
+                    rows="8"
+                    placeholder="Paste your work experience bullets, projects, tech stack, education, or raw notes here (or click '📥 Pre-Fill from Active Resume / Profile')..."
+                  ></textarea>
+                </div>
+
+                <div class="field" style="margin-top: 0.75rem;">
+                  <label for="creator-generator-prompt">Additional AI Formatting or Country Instructions (Optional)</label>
+                  <input
+                    type="text"
+                    id="creator-generator-prompt"
+                    placeholder="e.g. Emphasize high-scale microservices (350M+ users), highlight Anabin H+ for Germany, keep strictly 1 page..."
+                  >
+                </div>
+
+                <div class="template-quick-cards" id="creator-template-cards-picker">
+                  <button type="button" class="template-style-card active" data-style="jakes-ats">
+                    <strong>📄 Jake's Single-Column ATS</strong>
+                    <span>Universal Big-Tech 1-Page Standard</span>
+                  </button>
+                  <button type="button" class="template-style-card" data-style="eu-blue-card">
+                    <strong>🇪🇺 EU / German Blue-Card</strong>
+                    <span>Visa Status + Anabin H+ Prominence</span>
+                  </button>
+                  <button type="button" class="template-style-card" data-style="executive-impact">
+                    <strong>🏛️ UK / UAE Executive Impact</strong>
+                    <span>Executive Profile + Competency Grid</span>
+                  </button>
+                  <button type="button" class="template-style-card" data-style="compact-engineering">
+                    <strong>⚡ High-Density Engineering</strong>
+                    <span>Maximum Bullet Space for Systems/SRE</span>
+                  </button>
+                  <button type="button" class="template-style-card" data-style="academic-cv">
+                    <strong>🎓 Research &amp; AI CV</strong>
+                    <span>Education, AI R&amp;D &amp; Architecture First</span>
+                  </button>
+                </div>
+
+                <div class="creator-cta-bar" style="margin-top: 1rem;">
+                  <button type="button" id="btn-creator-generate-template-llm" class="btn btn-primary btn-lg">
+                    🤖 Generate `.tex` Resume with LLM
+                  </button>
+                  <button type="button" id="btn-creator-generate-and-pdf" class="btn btn-accent">
+                    🚀 Generate `.tex` &amp; Auto-Compile PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==============================================================
+                 MODE 3: CUSTOMIZE EXISTING RESUME WITH AI PROMPT & COUNTRY ALIGN
+                 ============================================================== -->
+            <div id="creator-panel-customize" class="creator-mode-panel" hidden>
+              <div class="studio-card">
+                <div class="studio-card-header">
+                  <div>
+                    <span class="step-kicker">EXISTING RESUME AI CUSTOMIZER &amp; ALIGNER</span>
+                    <h3>🔧 Select an Existing Resume, Give a Prompt &amp; Align to Any Country</h3>
+                  </div>
+                  <span class="badge badge-java">Prompt → `.tex` Transformer</span>
+                </div>
+
+                <p class="card-sub" style="margin-bottom: 0.9rem;">
+                  Select any saved resume from Supabase, choose a target country (or <strong>Global / All Countries</strong>), and give the AI instructions to enhance, re-order sections, rewrite bullets, or adapt the resume for a new market.
+                </p>
+
+                <div class="creator-config-grid">
+                  <div class="field">
+                    <label for="creator-select-existing-resume">1. Select Existing Resume from Supabase *</label>
+                    <select id="creator-select-existing-resume">
+                      <option value="">— Select a Saved Resume —</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="creator-align-target-country">2. Align to Country or Global *</label>
+                    <select id="creator-align-target-country">
+                      <option value="Global">🌍 Global (All Countries / Generic Standard)</option>
+                      <option value="Germany">🇩🇪 Germany (EU Blue Card + Anabin H+ Section Order)</option>
+                      <option value="Netherlands">🇳🇱 Netherlands (HSM Sponsor + 30% Ruling Focus)</option>
+                      <option value="United Kingdom">🇬🇧 United Kingdom (Skilled Worker + Executive Summary)</option>
+                      <option value="UAE">🇦🇪 UAE (Golden Visa / High-Scale FinTech &amp; AI)</option>
+                      <option value="Ireland">🇮🇪 Ireland (Critical Skills CSEP Standard)</option>
+                      <option value="Switzerland">🇨🇭 Switzerland (Precision Systems &amp; Education)</option>
+                      <option value="Sweden">🇸🇪 Sweden (Nordic Engineering Impact)</option>
+                      <option value="Japan">🇯🇵 Japan (Chronological &amp; J-Skip/HSP Format)</option>
+                      <option value="Singapore">🇸🇬 Singapore (EP / FinTech Scale Standard)</option>
+                      <option value="Australia">🇦🇺 Australia (SID Subclass 482 Format)</option>
+                      <option value="Canada">🇨🇦 Canada (North American 1-Page ATS)</option>
+                      <option value="United States">🇺🇸 United States (Strict 1-Page Big-Tech ATS)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field" style="margin-top: 0.8rem;">
+                  <label for="creator-existing-custom-prompt">3. Your AI Enhancement &amp; Customization Prompt *</label>
+                  <textarea
+                    id="creator-existing-custom-prompt"
+                    rows="4"
+                    placeholder="e.g. Align this resume for Germany EU Blue Card roles: add an Executive Summary at the top, move Education above Technical Skills with NIT Bhopal Anabin H+ noted, and strengthen the distributed systems & Kafka throughput metrics..."
+                  ></textarea>
+                </div>
+
+                <div class="companion-quick-prompts" style="margin-top: 0.65rem;">
+                  <button type="button" class="creator-prompt-chip" data-prompt="Align this resume for Germany EU Blue Card applications: include visa/relocation status in header, highlight NIT Bhopal Anabin H+ equivalence in Education, and reorder sections to Summary, Experience, Education, Skills, Projects.">
+                    🇩🇪 Align for Germany (Blue Card + Anabin H+)
+                  </button>
+                  <button type="button" class="creator-prompt-chip" data-prompt="Align this resume for Netherlands Highly Skilled Migrant (HSM) roles at Booking.com/Adyen/Uber: emphasize high-throughput distributed systems, 350M+ user scale, low-latency SLA metrics, and concise 1-page ATS layout.">
+                    🇳🇱 Align for Netherlands (HSM / FinTech Scale)
+                  </button>
+                  <button type="button" class="creator-prompt-chip" data-prompt="Transform this resume into a universal Global (All Countries) 1-page ATS-optimized resume using strict XYZ impact bullets, clear Technical Skills categorization, and zero country-specific clutter.">
+                    🌍 Convert to Global (All Countries) Generic Base
+                  </button>
+                  <button type="button" class="creator-prompt-chip" data-prompt="Enhance all work experience and project bullets to emphasize GenAI, Agentic AI workflows, RAG pipelines, LLM orchestration, and production reliability while preserving all quantified metrics.">
+                    🤖 Pivot &amp; Enhance for GenAI / Agentic AI
+                  </button>
+                  <button type="button" class="creator-prompt-chip" data-prompt="Align this resume for Japan engineering roles (Woven by Toyota, Mercari, Rakuten, PayPay): ensure clean chronological flow, clear Education & degree details, and collaborative systems engineering impact.">
+                    🇯🇵 Align for Japan (J-Skip / Chronological Clarity)
+                  </button>
+                </div>
+
+                <div class="creator-cta-bar" style="margin-top: 1rem;">
+                  <button type="button" id="btn-creator-run-custom-prompt" class="btn btn-primary btn-lg">
+                    🤖 Apply AI Prompt &amp; Align Resume
+                  </button>
+                  <button type="button" id="btn-creator-custom-prompt-and-pdf" class="btn btn-accent">
+                    🚀 Apply Prompt, Compile PDF &amp; Preview
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Live Compilable .tex Editor, 1-Page PDF Preview & Supabase Persistence -->
+          <div class="creator-right-column">
+            <!-- Live .tex Code Editor Card -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <div>
+                  <span class="step-kicker">LIVE COMPILABLE LATEX (`.TEX`) SOURCE</span>
+                  <h3>LaTeX Code Editor &amp; Supabase Persistence</h3>
+                </div>
+                <span id="creator-status-badge" class="badge badge-sponsor">Ready</span>
+              </div>
+
+              <div class="workbench-toolbar">
+                <button type="button" id="btn-creator-compile-pdf" class="btn btn-primary btn-sm">
+                  🔄 Compile `.tex` → PDF
+                </button>
+                <button type="button" id="btn-creator-save-supabase" class="btn btn-accent btn-sm" title="Save or update this resume in Supabase public.latex_resumes">
+                  💾 Save Resume to Supabase
+                </button>
+                <button type="button" id="btn-creator-save-as-new" class="btn btn-secondary btn-sm" title="Save as a brand-new country or global resume variant in Supabase">
+                  ➕ Save as New Copy
+                </button>
+                <button type="button" id="btn-creator-parse-tex-to-sections" class="btn btn-secondary btn-sm" title="Sync changes from raw .tex editor back into the Section Builder cards">
+                  🔄 Sync `.tex` → Sections
+                </button>
+                <button type="button" id="btn-creator-copy-tex" class="btn btn-secondary btn-sm">
+                  📋 Copy `.tex`
+                </button>
+                <button type="button" id="btn-creator-download-tex" class="btn btn-secondary btn-sm">
+                  ⬇️ `.tex`
+                </button>
+                <button type="button" id="btn-creator-send-to-tailor" class="btn btn-secondary btn-sm" title="Send this resume directly into the AI Job Tailor Studio">
+                  🤖 Send to Job Tailor
+                </button>
+              </div>
+
+              <pre id="creator-ai-log" class="tailor-log-box" style="max-height: 95px; margin-bottom: 0.65rem;" aria-live="polite">[Resume Creator Studio] Select a country preference, edit sections or prompt the AI, and compile to PDF.</pre>
+
+              <textarea
+                id="creator-latex-editor"
+                class="latex-code-editor"
+                style="min-height: 340px;"
+                spellcheck="false"
+                aria-label="Resume Creator LaTeX Source Code"
+              ></textarea>
+            </div>
+
+            <!-- Live 1-Page PDF Preview Card -->
+            <div class="studio-card" style="margin-top: 1rem;">
+              <div class="studio-card-header">
+                <div>
+                  <span class="step-kicker">COMPILED PDF OUTPUT</span>
+                  <h3 id="creator-pdf-filename-label">AnilKumar_Global_Resume.pdf</h3>
+                </div>
+                <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
+                  <button type="button" id="btn-creator-download-pdf" class="btn btn-primary btn-sm" disabled>
+                    📥 Download PDF
+                  </button>
+                  <button type="button" id="btn-creator-open-pdf-tab" class="btn btn-secondary btn-sm" disabled>
+                    ↗ Open PDF
+                  </button>
+                </div>
+              </div>
+
+              <div class="pdf-preview-container" style="min-height: 460px;">
+                <iframe id="creator-pdf-iframe" class="pdf-preview-iframe" title="Resume Creator Compiled PDF Preview" hidden></iframe>
+                <div id="creator-pdf-placeholder" class="pdf-preview-placeholder">
+                  <div class="empty-icon">📄</div>
+                  <h4>Live 1-Page PDF Compiler</h4>
+                  <p>
+                    Click <strong>"🔄 Compile `.tex` → PDF"</strong> or <strong>"✨ AI Enhance Entire Resume &amp; Compile PDF"</strong> to render and download your PDF.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1065,10 +1592,16 @@
                 <label for="lr-name">Resume Display Name *</label>
                 <input type="text" id="lr-name" placeholder="e.g. Resume C — Distributed Systems & Cloud SRE" required>
               </div>
-              <div class="field field-span-2">
+              <div class="field">
+                <label for="lr-country">Target Country Preference *</label>
+                <input type="text" id="lr-country" list="world-countries-datalist" value="Global" placeholder="Global (All Countries) or e.g. Germany, Netherlands, UK...">
+              </div>
+              <div class="field">
                 <label for="lr-track">Associated Track Category (Type ANY custom track or click a quick preset below) *</label>
                 <input type="text" id="lr-track" list="resume-tracks-datalist" placeholder="Type any custom track (e.g. Distributed Systems / Cloud SRE, Full-Stack, Python Backend, FinTech, Staff Engineer)..." required>
-                <div class="quick-track-presets" style="display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.45rem;">
+              </div>
+              <div class="field field-span-2">
+                <div class="quick-track-presets" style="display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.15rem;">
                   <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Java / Spring Boot Backend" data-id="RES-JAVA" data-name="Resume A — Senior Java 21 / Spring Boot / Kafka">☕ Java / Spring Boot</button>
                   <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="GenAI / Agentic AI Engineer" data-id="RES-GENAI" data-name="Resume B — Senior GenAI / Agentic AI / RAG">🤖 GenAI / Agentic AI</button>
                   <button type="button" class="btn btn-secondary btn-xs preset-track-chip" data-track="Distributed Systems / Cloud SRE" data-id="RES-DIST-SRE" data-name="Resume C — Distributed Systems, Cloud & SRE Platform">☁️ Distributed Systems / SRE</button>

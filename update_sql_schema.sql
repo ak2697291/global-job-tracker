@@ -33,19 +33,27 @@ ALTER TABLE public.resume_checklist
   ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
 CREATE TABLE IF NOT EXISTS public.latex_resumes (
-  id          TEXT PRIMARY KEY,
-  name        TEXT NOT NULL,
-  track_type  TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
-  latex_code  TEXT NOT NULL,
-  is_default  BOOLEAN NOT NULL DEFAULT false,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id              TEXT PRIMARY KEY,
+  name            TEXT NOT NULL,
+  track_type      TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
+  target_country  TEXT NOT NULL DEFAULT 'Global',
+  template_style  TEXT NOT NULL DEFAULT 'jakes-ats',
+  section_order   TEXT NOT NULL DEFAULT 'summary,skills,experience,projects,education,achievements',
+  latex_code      TEXT NOT NULL,
+  is_default      BOOLEAN NOT NULL DEFAULT false,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 ALTER TABLE public.latex_resumes
-  ADD COLUMN IF NOT EXISTS track_type TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
-  ADD COLUMN IF NOT EXISTS latex_code TEXT NOT NULL DEFAULT '',
-  ADD COLUMN IF NOT EXISTS is_default BOOLEAN NOT NULL DEFAULT false;
+  ADD COLUMN IF NOT EXISTS track_type     TEXT NOT NULL DEFAULT 'Java / Spring Boot Backend',
+  ADD COLUMN IF NOT EXISTS target_country TEXT NOT NULL DEFAULT 'Global',
+  ADD COLUMN IF NOT EXISTS template_style TEXT NOT NULL DEFAULT 'jakes-ats',
+  ADD COLUMN IF NOT EXISTS section_order  TEXT NOT NULL DEFAULT 'summary,skills,experience,projects,education,achievements',
+  ADD COLUMN IF NOT EXISTS latex_code     TEXT NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS is_default     BOOLEAN NOT NULL DEFAULT false;
+
+CREATE INDEX IF NOT EXISTS idx_latex_resumes_target_country ON public.latex_resumes (target_country);
 
 ALTER TABLE public.latex_resumes ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Allow public read/write on latex_resumes" ON public.latex_resumes;

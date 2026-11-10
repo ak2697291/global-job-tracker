@@ -2080,3 +2080,392 @@ body {
   font-size: 1.15rem;
   cursor: pointer;
 }
+
+/* ==========================================================================
+   8. COUNTRY-AWARE RESUME CREATOR STUDIO & COUNTRY-FIRST TAILOR STYLES
+   ========================================================================== */
+
+.creator-studio-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.creator-library-card,
+.creator-config-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.creator-library-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.creator-saved-resumes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+  gap: 0.7rem;
+}
+
+.creator-resume-tile {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.55rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.creator-resume-tile.active-tile {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.creator-resume-tile-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.creator-resume-tile-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.creator-resume-tile-title {
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--text-primary);
+}
+
+.creator-resume-tile-meta {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.creator-resume-tile-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.creator-config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.country-norms-banner,
+.country-resolution-banner {
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  background: var(--primary-soft);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.country-resolution-banner {
+  margin-bottom: 0.85rem;
+}
+
+.country-resolution-banner.fallback-mode {
+  border-color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.country-norms-order-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}
+
+.country-order-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.checkbox-inline-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.country-match-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.creator-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 1180px) {
+  .creator-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.creator-left-column,
+.creator-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.creator-mode-tabs {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  background: var(--bg-surface);
+  padding: 0.45rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.creator-mode-btn,
+.creator-mode-tab {
+  flex: 1 1 180px;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.creator-mode-btn:hover,
+.creator-mode-tab:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.creator-mode-btn.active,
+.creator-mode-tab.active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.creator-mode-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.creator-mode-panel[hidden] {
+  display: none !important;
+}
+
+.creator-header-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.65rem;
+}
+
+.creator-sections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.creator-section-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.creator-section-card.section-disabled {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+.creator-section-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.creator-section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.creator-section-order-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.creator-section-title-input {
+  padding: 0.32rem 0.55rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.83rem;
+  min-width: 190px;
+}
+
+.creator-section-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.creator-section-textarea,
+#creator-raw-content,
+#creator-existing-custom-prompt {
+  field-sizing: content;
+  height: auto;
+  width: 100%;
+  min-block-size: 4lh;
+  max-block-size: 16lh;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.81rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.creator-section-ai-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.creator-section-ai-prompt {
+  flex: 1 1 220px;
+  padding: 0.38rem 0.6rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.77rem;
+}
+
+.creator-cta-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.template-quick-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.template-style-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.template-style-card strong {
+  font-size: 0.79rem;
+}
+
+.template-style-card span {
+  font-size: 0.71rem;
+  color: var(--text-muted);
+}
+
+.template-style-card.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.creator-prompt-chip {
+  padding: 0.38rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.creator-prompt-chip:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
